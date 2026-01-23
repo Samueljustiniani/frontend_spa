@@ -1,0 +1,46 @@
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0"><i class="feather icon-home me-2"></i>Salas</h5>
+        <a routerLink="new" class="btn btn-primary btn-sm">
+          <i class="feather icon-plus me-1"></i>Nueva Sala
+        </a>
+      </div>
+      <div class="card-body">
+        <div *ngIf="loading" class="text-center py-4">
+          <div class="spinner-border text-primary" role="status"></div>
+        </div>
+
+        <div class="row" *ngIf="!loading">
+          <div class="col-md-4 col-lg-3 mb-4" *ngFor="let room of rooms">
+            <div class="card h-100" [class.border-success]="room.status === 'A'" [class.border-secondary]="room.status !== 'A'">
+              <div class="card-body text-center">
+                <div class="mb-3">
+                  <i class="feather icon-home" style="font-size: 48px;" 
+                     [class.text-success]="room.status === 'A'" [class.text-secondary]="room.status !== 'A'"></i>
+                </div>
+                <h5 class="card-title">{{ room.name }}</h5>
+                <p class="card-text text-muted">{{ room.type }}</p>
+                <span class="badge" [class]="room.status === 'A' ? 'bg-success' : 'bg-secondary'">
+                  {{ room.status === 'A' ? 'Disponible' : 'No disponible' }}
+                </span>
+              </div>
+              <div class="card-footer bg-transparent text-center">
+                <a [routerLink]="[room.id, 'edit']" class="btn btn-outline-primary btn-sm me-1">
+                  <i class="feather icon-edit"></i> Editar
+                </a>
+                <button (click)="deleteRoom(room.id)" class="btn btn-outline-danger btn-sm">
+                  <i class="feather icon-trash-2"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="col-12" *ngIf="rooms.length === 0">
+            <p class="text-center text-muted py-4">No hay salas registradas</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

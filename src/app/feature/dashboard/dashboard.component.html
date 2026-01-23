@@ -1,0 +1,145 @@
+<!-- Page Header -->
+<div class="page-header mb-4">
+  <h4>Dashboard</h4>
+  <p class="text-muted mb-0">Bienvenido al panel de administración</p>
+</div>
+
+<div class="row">
+  <!-- Stats Cards -->
+  <div class="col-md-6 col-xl-3 mb-4">
+    <div class="stat-card primary">
+      <span class="material-icons stat-icon">inventory_2</span>
+      <h3>{{ stats.totalProducts }}</h3>
+      <p>Productos</p>
+    </div>
+  </div>
+
+  <div class="col-md-6 col-xl-3 mb-4">
+    <div class="stat-card success">
+      <span class="material-icons stat-icon">payments</span>
+      <h3>S/. {{ stats.revenue | number:'1.0-0' }}</h3>
+      <p>Ingresos</p>
+    </div>
+  </div>
+
+  <div class="col-md-6 col-xl-3 mb-4">
+    <div class="stat-card warning">
+      <span class="material-icons stat-icon">event</span>
+      <h3>{{ stats.todayQuotes }}</h3>
+      <p>Citas Hoy</p>
+    </div>
+  </div>
+
+  <div class="col-md-6 col-xl-3 mb-4">
+    <div class="stat-card info">
+      <span class="material-icons stat-icon">people</span>
+      <h3>{{ stats.totalUsers }}</h3>
+      <p>Usuarios</p>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <!-- Recent Sales -->
+  <div class="col-lg-8 mb-4">
+    <div class="card">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="card-title"><span class="material-icons me-2 align-middle">point_of_sale</span>Ventas Recientes</h5>
+        <a routerLink="/sales" class="btn btn-sm btn-outline-primary">Ver todas</a>
+      </div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover mb-0">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Cliente</th>
+                <th>Total</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (sale of recentSales; track sale.id) {
+                <tr>
+                  <td>#{{ sale.id }}</td>
+                  <td>{{ sale.userName }}</td>
+                  <td class="text-success fw-bold">S/. {{ sale.total | number:'1.2-2' }}</td>
+                  <td>
+                    <span class="badge" [class]="sale.status === 'A' ? 'bg-success' : 'bg-danger'">
+                      {{ sale.status === 'A' ? 'Completada' : 'Cancelada' }}
+                    </span>
+                  </td>
+                </tr>
+              }
+              @if (recentSales.length === 0) {
+                <tr>
+                  <td colspan="4" class="text-center text-muted py-4">No hay ventas recientes</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Today's Quotes -->
+  <div class="col-lg-4 mb-4">
+    <div class="card">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="card-title"><span class="material-icons me-2 align-middle">schedule</span>Citas de Hoy</h5>
+        <a routerLink="/quotes" class="btn btn-sm btn-outline-primary">Ver todas</a>
+      </div>
+      <div class="card-body p-0">
+        <ul class="list-group list-group-flush">
+          @for (quote of todayQuotes; track quote.id) {
+            <li class="list-group-item">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <strong>{{ quote.startTime }} - {{ quote.endTime }}</strong>
+                  <p class="mb-0 small text-muted">{{ quote.serviceName }}</p>
+                </div>
+                <span class="badge" [class]="quote.status === 'A' ? 'bg-success' : quote.status === 'P' ? 'bg-warning' : 'bg-secondary'">
+                  {{ quote.status === 'A' ? 'Confirmada' : quote.status === 'P' ? 'Pendiente' : 'Cancelada' }}
+                </span>
+              </div>
+            </li>
+          }
+          @if (todayQuotes.length === 0) {
+            <li class="list-group-item text-center text-muted py-4">
+              <span class="material-icons d-block mb-2" style="font-size: 32px;">event_busy</span>
+              No hay citas para hoy
+            </li>
+          }
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="card-title"><span class="material-icons me-2 align-middle">bolt</span>Acciones Rápidas</h5>
+      </div>
+      <div class="card-body">
+        <div class="d-flex flex-wrap gap-3">
+          <a routerLink="/sales/new" class="btn btn-primary">
+            <span class="material-icons me-1 align-middle">add</span>Nueva Venta
+          </a>
+          <a routerLink="/quotes/new" class="btn btn-warning">
+            <span class="material-icons me-1 align-middle">event</span>Nueva Cita
+          </a>
+          <a routerLink="/products/new" class="btn btn-info">
+            <span class="material-icons me-1 align-middle">inventory_2</span>Nuevo Producto
+          </a>
+          <a routerLink="/customers/new" class="btn btn-success">
+            <span class="material-icons me-1 align-middle">person_add</span>Nuevo Usuario
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

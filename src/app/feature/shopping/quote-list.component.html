@@ -1,0 +1,81 @@
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0"><i class="feather icon-calendar me-2"></i>Citas / Reservas</h5>
+        <a routerLink="new" class="btn btn-primary btn-sm">
+          <i class="feather icon-plus me-1"></i>Nueva Cita
+        </a>
+      </div>
+      <div class="card-body">
+        <!-- Filter -->
+        <div class="row mb-3">
+          <div class="col-md-3">
+            <label class="form-label small">Filtrar por fecha</label>
+            <input type="date" class="form-control" [(ngModel)]="filterDate" (change)="onDateChange()">
+          </div>
+          <div class="col-md-2 d-flex align-items-end">
+            <button *ngIf="filterDate" class="btn btn-outline-secondary btn-sm" (click)="clearFilter()">
+              Limpiar
+            </button>
+          </div>
+        </div>
+
+        <!-- Loading -->
+        <div *ngIf="loading" class="text-center py-4">
+          <div class="spinner-border text-primary" role="status"></div>
+        </div>
+
+        <!-- Table -->
+        <div class="table-responsive" *ngIf="!loading">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Fecha</th>
+                <th>Hora</th>
+                <th>Cliente</th>
+                <th>Servicio</th>
+                <th>Sala</th>
+                <th>Estado</th>
+                <th class="text-center">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let quote of quotes">
+                <td>#{{ quote.id }}</td>
+                <td><strong>{{ quote.quoteDate }}</strong></td>
+                <td>{{ quote.startTime }} - {{ quote.endTime }}</td>
+                <td>{{ quote.userName }}</td>
+                <td>
+                  <span class="badge bg-info">{{ quote.serviceName }}</span>
+                </td>
+                <td>{{ quote.roomName }}</td>
+                <td>
+                  <span class="badge" [class]="getStatusClass(quote.status)">
+                    {{ getStatusLabel(quote.status) }}
+                  </span>
+                </td>
+                <td class="text-center">
+                  <button *ngIf="quote.status === 'P'" (click)="confirmQuote(quote.id)" 
+                          class="btn btn-icon btn-outline-success btn-sm me-1" title="Confirmar">
+                    <i class="feather icon-check"></i>
+                  </button>
+                  <button *ngIf="quote.status !== 'C'" (click)="cancelQuote(quote.id)" 
+                          class="btn btn-icon btn-outline-danger btn-sm" title="Cancelar">
+                    <i class="feather icon-x"></i>
+                  </button>
+                </td>
+              </tr>
+              <tr *ngIf="quotes.length === 0">
+                <td colspan="8" class="text-center text-muted py-4">
+                  No se encontraron citas
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

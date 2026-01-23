@@ -1,0 +1,82 @@
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0"><i class="feather icon-box me-2"></i>Productos</h5>
+        <a routerLink="new" class="btn btn-primary btn-sm">
+          <i class="feather icon-plus me-1"></i>Nuevo Producto
+        </a>
+      </div>
+      <div class="card-body">
+        <!-- Search -->
+        <div class="row mb-3">
+          <div class="col-md-4">
+            <input type="text" class="form-control" placeholder="Buscar producto..." 
+                   [(ngModel)]="searchTerm">
+          </div>
+        </div>
+
+        <!-- Loading -->
+        <div *ngIf="loading" class="text-center py-4">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Cargando...</span>
+          </div>
+        </div>
+
+        <!-- Table -->
+        <div class="table-responsive" *ngIf="!loading">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Imagen</th>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Precio</th>
+                <th>Stock</th>
+                <th>Estado</th>
+                <th class="text-center">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let product of filteredProducts">
+                <td>{{ product.id }}</td>
+                <td>
+                  <img *ngIf="product.imageUrl" [src]="product.imageUrl" 
+                       alt="{{ product.name }}" class="img-thumbnail" style="width: 50px; height: 50px; object-fit: cover;">
+                  <span *ngIf="!product.imageUrl" class="badge bg-secondary">Sin imagen</span>
+                </td>
+                <td><strong>{{ product.name }}</strong></td>
+                <td>{{ product.description | slice:0:50 }}{{ (product.description?.length ?? 0) > 50 ? '...' : '' }}</td>
+                <td class="text-success fw-bold">S/. {{ product.price | number:'1.2-2' }}</td>
+                <td>
+                  <span [class]="product.stock > 10 ? 'badge bg-success' : product.stock > 0 ? 'badge bg-warning' : 'badge bg-danger'">
+                    {{ product.stock }}
+                  </span>
+                </td>
+                <td>
+                  <span [class]="product.status === 'A' ? 'badge bg-success' : 'badge bg-secondary'">
+                    {{ product.status === 'A' ? 'Activo' : 'Inactivo' }}
+                  </span>
+                </td>
+                <td class="text-center">
+                  <a [routerLink]="[product.id, 'edit']" class="btn btn-icon btn-outline-primary btn-sm me-1" title="Editar">
+                    <i class="feather icon-edit"></i>
+                  </a>
+                  <button (click)="deleteProduct(product.id)" class="btn btn-icon btn-outline-danger btn-sm" title="Eliminar">
+                    <i class="feather icon-trash-2"></i>
+                  </button>
+                </td>
+              </tr>
+              <tr *ngIf="filteredProducts.length === 0">
+                <td colspan="8" class="text-center text-muted py-4">
+                  No se encontraron productos
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

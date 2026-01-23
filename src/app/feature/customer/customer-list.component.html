@@ -1,0 +1,87 @@
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0"><i class="feather icon-users me-2"></i>Usuarios</h5>
+        <div class="d-flex gap-2">
+          <button class="btn btn-outline-secondary btn-sm" (click)="toggleShowInactive()">
+            <i class="feather" [class]="showInactive ? 'icon-eye-off' : 'icon-eye'"></i>
+            {{ showInactive ? 'Solo Activos' : 'Ver Todos' }}
+          </button>
+          <a routerLink="new" class="btn btn-primary btn-sm">
+            <i class="feather icon-plus me-1"></i>Nuevo Usuario
+          </a>
+        </div>
+      </div>
+      <div class="card-body">
+        <!-- Search -->
+        <div class="row mb-3">
+          <div class="col-md-4">
+            <input type="text" class="form-control" placeholder="Buscar usuario..." 
+                   [(ngModel)]="searchTerm">
+          </div>
+        </div>
+
+        <!-- Loading -->
+        <div *ngIf="loading" class="text-center py-4">
+          <div class="spinner-border text-primary" role="status"></div>
+        </div>
+
+        <!-- Table -->
+        <div class="table-responsive" *ngIf="!loading">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Email</th>
+                <th>Teléfono</th>
+                <th>Rol</th>
+                <th>Estado</th>
+                <th>Creado</th>
+                <th class="text-center">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let user of filteredUsers" [class.table-secondary]="user.status !== 'A'">
+                <td>{{ user.id }}</td>
+                <td><strong>{{ user.name }} {{ user.lastname }}</strong></td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.phone || '-' }}</td>
+                <td>
+                  <span [attr.class]="getRoleClass(user.role || '')">
+                    {{ getRoleLabel(user.role || '') }}
+                  </span>
+                </td>
+                <td>
+                  <span [class]="user.status === 'A' ? 'badge bg-success' : 'badge bg-secondary'">
+                    {{ user.status === 'A' ? 'Activo' : 'Inactivo' }}
+                  </span>
+                </td>
+                <td>{{ user.createdAt | date:'dd/MM/yyyy' }}</td>
+                <td class="text-center">
+                  <a [routerLink]="[user.id, 'edit']" class="btn btn-icon btn-outline-primary btn-sm me-1" title="Editar">
+                    <i class="feather icon-edit"></i>
+                  </a>
+                  <button *ngIf="user.status === 'A'" (click)="deleteUser(user.id!)" 
+                          class="btn btn-icon btn-outline-danger btn-sm" title="Desactivar">
+                    <i class="feather icon-user-x"></i>
+                  </button>
+                  <button *ngIf="user.status !== 'A'" (click)="reactivateUser(user.id!)" 
+                          class="btn btn-icon btn-outline-success btn-sm" title="Reactivar">
+                    <i class="feather icon-user-check"></i>
+                  </button>
+                </td>
+              </tr>
+              <tr *ngIf="filteredUsers.length === 0">
+                <td colspan="8" class="text-center text-muted py-4">
+                  No se encontraron usuarios
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

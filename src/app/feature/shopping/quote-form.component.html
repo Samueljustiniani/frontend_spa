@@ -1,0 +1,79 @@
+<div class="row">
+  <div class="col-md-8 col-lg-6 mx-auto">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="mb-0"><i class="feather icon-calendar me-2"></i>Nueva Cita</h5>
+      </div>
+      <div class="card-body">
+        <div *ngIf="loading" class="text-center py-4">
+          <div class="spinner-border text-primary" role="status"></div>
+        </div>
+
+        <form *ngIf="!loading" [formGroup]="form" (ngSubmit)="onSubmit()">
+          <div class="mb-3">
+            <label class="form-label">Cliente *</label>
+            <select class="form-select" formControlName="userId" [class.is-invalid]="isInvalid('userId')">
+              <option [ngValue]="null">Seleccionar cliente...</option>
+              <option *ngFor="let user of users" [ngValue]="user.id">
+                {{ user.name }} {{ user.lastname }} - {{ user.email }}
+              </option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Servicio *</label>
+            <select class="form-select" formControlName="serviceId" [class.is-invalid]="isInvalid('serviceId')">
+              <option [ngValue]="null">Seleccionar servicio...</option>
+              <option *ngFor="let service of services" [ngValue]="service.id">
+                {{ service.name }} - {{ service.durationMinutes }} min - S/. {{ service.price }}
+              </option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Sala *</label>
+            <select class="form-select" formControlName="roomId" [class.is-invalid]="isInvalid('roomId')"
+                    (change)="checkAvailability()">
+              <option [ngValue]="null">Seleccionar sala...</option>
+              <option *ngFor="let room of rooms" [ngValue]="room.id">
+                {{ room.name }} ({{ room.type }})
+              </option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Fecha *</label>
+            <input type="date" class="form-control" formControlName="quoteDate"
+                   [class.is-invalid]="isInvalid('quoteDate')" (change)="checkAvailability()">
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Hora Inicio *</label>
+              <input type="time" class="form-control" formControlName="startTime"
+                     [class.is-invalid]="isInvalid('startTime')" (change)="checkAvailability()">
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Hora Fin *</label>
+              <input type="time" class="form-control" formControlName="endTime"
+                     [class.is-invalid]="isInvalid('endTime')" (change)="checkAvailability()">
+            </div>
+          </div>
+
+          <div *ngIf="availabilityMessage" class="alert" 
+               [class]="availabilityMessage.includes('✓') ? 'alert-success' : 'alert-danger'">
+            {{ availabilityMessage }}
+          </div>
+
+          <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary" [disabled]="submitting">
+              <span *ngIf="submitting" class="spinner-border spinner-border-sm me-1"></span>
+              Crear Cita
+            </button>
+            <a routerLink="/quotes" class="btn btn-outline-secondary">Cancelar</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

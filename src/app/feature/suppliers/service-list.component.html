@@ -1,0 +1,47 @@
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0"><i class="feather icon-award me-2"></i>Servicios</h5>
+        <a routerLink="new" class="btn btn-primary btn-sm">
+          <i class="feather icon-plus me-1"></i>Nuevo Servicio
+        </a>
+      </div>
+      <div class="card-body">
+        <div *ngIf="loading" class="text-center py-4">
+          <div class="spinner-border text-primary" role="status"></div>
+        </div>
+
+        <div class="row" *ngIf="!loading">
+          <div class="col-md-6 col-lg-4 mb-4" *ngFor="let service of services">
+            <div class="card h-100 border-primary">
+              <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">{{ service.name }}</h5>
+              </div>
+              <div class="card-body">
+                <p class="card-text">{{ service.description || 'Sin descripción' }}</p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <span class="badge bg-info">
+                    <i class="feather icon-clock me-1"></i>{{ service.durationMinutes }} min
+                  </span>
+                  <span class="text-success fw-bold fs-5">S/. {{ service.price | number:'1.2-2' }}</span>
+                </div>
+              </div>
+              <div class="card-footer bg-transparent">
+                <a [routerLink]="[service.id, 'edit']" class="btn btn-outline-primary btn-sm me-1">
+                  <i class="feather icon-edit"></i> Editar
+                </a>
+                <button (click)="deleteService(service.id)" class="btn btn-outline-danger btn-sm">
+                  <i class="feather icon-trash-2"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="col-12" *ngIf="services.length === 0">
+            <p class="text-center text-muted py-4">No hay servicios registrados</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

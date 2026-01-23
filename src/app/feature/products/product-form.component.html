@@ -1,0 +1,82 @@
+<div class="row">
+  <div class="col-md-8 col-lg-6 mx-auto">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="mb-0">
+          <i class="feather icon-box me-2"></i>
+          {{ isEdit ? 'Editar Producto' : 'Nuevo Producto' }}
+        </h5>
+      </div>
+      <div class="card-body">
+        <!-- Loading -->
+        <div *ngIf="loading" class="text-center py-4">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Cargando...</span>
+          </div>
+        </div>
+
+        <!-- Form -->
+        <form *ngIf="!loading" [formGroup]="form" (ngSubmit)="onSubmit()">
+          <div class="mb-3">
+            <label class="form-label">Nombre *</label>
+            <input type="text" class="form-control" formControlName="name"
+                   [class.is-invalid]="isInvalid('name')">
+            <div class="invalid-feedback" *ngIf="isInvalid('name')">
+              El nombre es requerido
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Descripción</label>
+            <textarea class="form-control" formControlName="description" rows="3"></textarea>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Precio *</label>
+              <div class="input-group">
+                <span class="input-group-text">S/.</span>
+                <input type="number" class="form-control" formControlName="price" step="0.01"
+                       [class.is-invalid]="isInvalid('price')">
+              </div>
+              <div class="invalid-feedback" *ngIf="isInvalid('price')">
+                Ingrese un precio válido
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Stock *</label>
+              <input type="number" class="form-control" formControlName="stock"
+                     [class.is-invalid]="isInvalid('stock')">
+              <div class="invalid-feedback" *ngIf="isInvalid('stock')">
+                Ingrese un stock válido
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">URL de Imagen</label>
+            <input type="url" class="form-control" formControlName="imageUrl" 
+                   placeholder="https://ejemplo.com/imagen.jpg">
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label">Estado</label>
+            <select class="form-select" formControlName="status">
+              <option value="A">Activo</option>
+              <option value="I">Inactivo</option>
+            </select>
+          </div>
+
+          <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary" [disabled]="submitting">
+              <span *ngIf="submitting" class="spinner-border spinner-border-sm me-1"></span>
+              {{ isEdit ? 'Actualizar' : 'Crear' }} Producto
+            </button>
+            <a routerLink="/products" class="btn btn-outline-secondary">Cancelar</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,83 @@
+<div class="admin-layout" [class.sidebar-collapsed]="!sidebarOpen">
+  <!-- Sidebar -->
+  <aside class="sidebar" [class.active]="sidebarOpen">
+    <div class="sidebar-header">
+      <a class="sidebar-brand" routerLink="/dashboard">
+        <span class="material-icons">spa</span>
+        <span>SPA Admin</span>
+      </a>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-label">Navegación</div>
+      <ul class="nav flex-column">
+        @for (item of menuItems; track item.route) {
+          <li class="nav-item">
+            <a class="nav-link" 
+               [routerLink]="item.route" 
+               routerLinkActive="active"
+               [routerLinkActiveOptions]="{exact: item.route === '/dashboard'}">
+              <span class="material-icons">{{ item.icon }}</span>
+              <span>{{ item.label }}</span>
+            </a>
+          </li>
+        }
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-left">
+        <button class="btn btn-icon" (click)="toggleSidebar()">
+          <span class="material-icons">menu</span>
+        </button>
+        <div class="search-box">
+          <span class="material-icons">search</span>
+          <input type="text" placeholder="Buscar...">
+        </div>
+      </div>
+
+      <div class="header-right">
+        <div class="header-icon" title="Notificaciones">
+          <span class="material-icons">notifications</span>
+          <span class="badge">3</span>
+        </div>
+
+        <!-- Logout Button -->
+        <button class="btn btn-outline-danger btn-sm d-flex align-items-center gap-1" (click)="logout()">
+          <span class="material-icons" style="font-size: 18px;">logout</span>
+          <span class="d-none d-md-inline">Salir</span>
+        </button>
+
+        <div class="user-profile">
+          <div class="d-flex align-items-center">
+            <!-- Foto de perfil si existe -->
+            @if (hasPhoto()) {
+              <img [src]="currentUser?.photoUrl" 
+                   alt="Avatar" 
+                   class="user-avatar-img"
+                   referrerpolicy="no-referrer">
+            } @else {
+              <!-- Iniciales si no hay foto -->
+              <div class="user-avatar">
+                {{ getUserInitials() }}
+              </div>
+            }
+            <div class="user-info ms-2 d-none d-md-block">
+              <h6>{{ getDisplayName() }}</h6>
+              <small>{{ getRoleLabel() }}</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Page Content -->
+    <div class="page-wrapper">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>
