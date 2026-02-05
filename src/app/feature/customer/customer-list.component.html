@@ -27,8 +27,14 @@
           <div class="spinner-border text-primary" role="status"></div>
         </div>
 
+        <!-- Error Message -->
+        <div *ngIf="!loading && errorMsg" class="alert alert-danger text-center" role="alert">
+          {{ errorMsg }}
+          <button class="btn btn-sm btn-outline-danger ms-2" (click)="loadUsers()">Reintentar</button>
+        </div>
+
         <!-- Table -->
-        <div class="table-responsive" *ngIf="!loading">
+        <div class="table-responsive" *ngIf="!loading && !errorMsg">
           <table class="table table-hover">
             <thead>
               <tr>

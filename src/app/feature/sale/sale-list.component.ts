@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { SaleService } from '../../core/services/sale.service';
 import { SaleResponse } from '../../core/interfaces/sale.interface';
+import { catchError, finalize, of } from 'rxjs';
 
 @Component({
   selector: 'app-sale-list',
@@ -16,8 +17,12 @@ export class SaleListComponent implements OnInit {
   sales: SaleResponse[] = [];
   loading = false;
   searchTerm = '';
+  errorMsg = '';
 
-  constructor(private saleService: SaleService) {}
+  constructor(
+    private saleService: SaleService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
     this.loadSales();
@@ -25,15 +30,35 @@ export class SaleListComponent implements OnInit {
 
   loadSales(): void {
     this.loading = true;
-    this.saleService.list().subscribe({
-      next: (data) => {
-        this.sales = data;
+    this.errorMsg = '';
+    this.cdr.detectChanges();
+    
+    console.log('[SaleList] Cargando ventas');
+    
+    this.saleService.list().pipe(
+      catchError((err) => {
+        console.error('[SaleList] Error:', err);
+        if (err.name === 'TimeoutError') {
+          this.errorMsg = 'La carga está tardando demasiado.';
+        } else if (err.status === 401) {
+          this.errorMsg = 'No tienes autorización.';
+        } else if (err.status === 0) {
+          this.errorMsg = 'No se pudo conectar al servidor.';
+        } else {
+          this.errorMsg = `Error al cargar las ventas: ${err.message || 'Error desconocido'}`;
+        }
+        this.cdr.detectChanges();
+        return of([]);
+      }),
+      finalize(() => {
+        console.log('[SaleList] Petición completada');
         this.loading = false;
-      },
-      error: (err) => {
-        console.error('Error loading sales:', err);
-        this.loading = false;
-      }
+        this.cdr.detectChanges();
+      })
+    ).subscribe((data) => {
+      console.log('[SaleList] Datos recibidos:', data.length, 'ventas');
+      this.sales = data;
+      this.cdr.detectChanges();
     });
   }
 

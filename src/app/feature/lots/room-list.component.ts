@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { RoomService } from '../../core/services/room.service';
 import { Room } from '../../core/interfaces/room.interface';
+import { catchError, finalize, of } from 'rxjs';
 
 @Component({
   selector: 'app-room-list',
@@ -15,8 +16,12 @@ import { Room } from '../../core/interfaces/room.interface';
 export class RoomListComponent implements OnInit {
   rooms: Room[] = [];
   loading = false;
+  errorMsg = '';
 
-  constructor(private roomService: RoomService) {}
+  constructor(
+    private roomService: RoomService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
     this.loadRooms();
@@ -24,15 +29,35 @@ export class RoomListComponent implements OnInit {
 
   loadRooms(): void {
     this.loading = true;
-    this.roomService.list().subscribe({
-      next: (data) => {
-        this.rooms = data;
+    this.errorMsg = '';
+    this.cdr.detectChanges();
+    
+    console.log('[RoomList] Cargando salas');
+    
+    this.roomService.list().pipe(
+      catchError((err) => {
+        console.error('[RoomList] Error:', err);
+        if (err.name === 'TimeoutError') {
+          this.errorMsg = 'La carga está tardando demasiado.';
+        } else if (err.status === 401) {
+          this.errorMsg = 'No tienes autorización.';
+        } else if (err.status === 0) {
+          this.errorMsg = 'No se pudo conectar al servidor.';
+        } else {
+          this.errorMsg = `Error al cargar las salas: ${err.message || 'Error desconocido'}`;
+        }
+        this.cdr.detectChanges();
+        return of([]);
+      }),
+      finalize(() => {
+        console.log('[RoomList] Petición completada');
         this.loading = false;
-      },
-      error: (err) => {
-        console.error('Error loading rooms:', err);
-        this.loading = false;
-      }
+        this.cdr.detectChanges();
+      })
+    ).subscribe((data) => {
+      console.log('[RoomList] Datos recibidos:', data.length, 'salas');
+      this.rooms = data;
+      this.cdr.detectChanges();
     });
   }
 

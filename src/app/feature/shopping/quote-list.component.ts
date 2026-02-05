@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { QuoteService } from '../../core/services/quote.service';
 import { QuoteResponse } from '../../core/interfaces/quote.interface';
+import { catchError, finalize, of } from 'rxjs';
 
 @Component({
   selector: 'app-quote-list',
@@ -16,8 +17,12 @@ export class QuoteListComponent implements OnInit {
   quotes: QuoteResponse[] = [];
   loading = false;
   filterDate = '';
+  errorMsg = '';
 
-  constructor(private quoteService: QuoteService) {}
+  constructor(
+    private quoteService: QuoteService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
     this.loadQuotes();
@@ -25,19 +30,39 @@ export class QuoteListComponent implements OnInit {
 
   loadQuotes(): void {
     this.loading = true;
+    this.errorMsg = '';
+    this.cdr.detectChanges();
+    
+    console.log('[QuoteList] Cargando citas');
+    
     const request$ = this.filterDate 
       ? this.quoteService.getByDate(this.filterDate)
       : this.quoteService.list();
     
-    request$.subscribe({
-      next: (data) => {
-        this.quotes = data;
+    request$.pipe(
+      catchError((err) => {
+        console.error('[QuoteList] Error:', err);
+        if (err.name === 'TimeoutError') {
+          this.errorMsg = 'La carga está tardando demasiado.';
+        } else if (err.status === 401) {
+          this.errorMsg = 'No tienes autorización.';
+        } else if (err.status === 0) {
+          this.errorMsg = 'No se pudo conectar al servidor.';
+        } else {
+          this.errorMsg = `Error al cargar las citas: ${err.message || 'Error desconocido'}`;
+        }
+        this.cdr.detectChanges();
+        return of([]);
+      }),
+      finalize(() => {
+        console.log('[QuoteList] Petición completada');
         this.loading = false;
-      },
-      error: (err) => {
-        console.error('Error loading quotes:', err);
-        this.loading = false;
-      }
+        this.cdr.detectChanges();
+      })
+    ).subscribe((data) => {
+      console.log('[QuoteList] Datos recibidos:', data.length, 'citas');
+      this.quotes = data;
+      this.cdr.detectChanges();
     });
   }
 

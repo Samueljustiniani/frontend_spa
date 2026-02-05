@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { UserService } from '../../core/services/user.service';
 import { UserDTO } from '../../core/interfaces/user.interface';
+import { catchError, finalize, of } from 'rxjs';
 
 @Component({
   selector: 'app-customer-list',
@@ -17,8 +18,12 @@ export class CustomerListComponent implements OnInit {
   loading = false;
   searchTerm = '';
   showInactive = false;
+  errorMsg = '';
 
-  constructor(private userService: UserService) {}
+  constructor(
+    private userService: UserService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
     this.loadUsers();
@@ -26,19 +31,39 @@ export class CustomerListComponent implements OnInit {
 
   loadUsers(): void {
     this.loading = true;
+    this.errorMsg = '';
+    this.cdr.detectChanges();
+    
+    console.log('[CustomerList] Cargando usuarios');
+    
     const request$ = this.showInactive 
       ? this.userService.listAll() 
       : this.userService.list();
     
-    request$.subscribe({
-      next: (data) => {
-        this.users = data;
+    request$.pipe(
+      catchError((err) => {
+        console.error('[CustomerList] Error:', err);
+        if (err.name === 'TimeoutError') {
+          this.errorMsg = 'La carga está tardando demasiado.';
+        } else if (err.status === 401) {
+          this.errorMsg = 'No tienes autorización.';
+        } else if (err.status === 0) {
+          this.errorMsg = 'No se pudo conectar al servidor.';
+        } else {
+          this.errorMsg = `Error al cargar los usuarios: ${err.message || 'Error desconocido'}`;
+        }
+        this.cdr.detectChanges();
+        return of([]);
+      }),
+      finalize(() => {
+        console.log('[CustomerList] Petición completada');
         this.loading = false;
-      },
-      error: (err) => {
-        console.error('Error loading users:', err);
-        this.loading = false;
-      }
+        this.cdr.detectChanges();
+      })
+    ).subscribe((data) => {
+      console.log('[CustomerList] Datos recibidos:', data.length, 'usuarios');
+      this.users = data;
+      this.cdr.detectChanges();
     });
   }
 

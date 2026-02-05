@@ -6,7 +6,7 @@ import {
   HttpEvent,
   HttpErrorResponse
 } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { Observable, throwError, timeout } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
@@ -31,12 +31,22 @@ export class JwtInterceptor implements HttpInterceptor {
       });
     }
 
+    console.log(`[HTTP] ${req.method} ${req.url}`, token ? '(con token)' : '(sin token)');
+
     return next.handle(authReq).pipe(
-      catchError((error: HttpErrorResponse) => {
-        if (error.status === 401) {
-          // Token expirado o inválido
-          this.authService.logout();
-          this.router.navigate(['/auth/signin']);
+      timeout(15000), // Timeout global de 15 segundos
+      catchError((error: HttpErrorResponse | Error) => {
+        if (error instanceof HttpErrorResponse) {
+          console.error(`[HTTP Error] ${req.url}:`, error.status, error.message);
+          if (error.status === 401) {
+            // Token expirado o inválido
+            this.authService.logout();
+            this.router.navigate(['/auth/signin']);
+          }
+        } else if (error.name === 'TimeoutError') {
+          console.error(`[HTTP Timeout] ${req.url}: La petición tardó más de 15 segundos`);
+        } else {
+          console.error(`[HTTP Error] ${req.url}:`, error);
         }
         return throwError(() => error);
       })

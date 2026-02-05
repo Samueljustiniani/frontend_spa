@@ -12,7 +12,13 @@
           <div class="spinner-border text-primary" role="status"></div>
         </div>
 
-        <div class="row" *ngIf="!loading">
+        <!-- Error Message -->
+        <div *ngIf="!loading && errorMsg" class="alert alert-danger text-center" role="alert">
+          {{ errorMsg }}
+          <button class="btn btn-sm btn-outline-danger ms-2" (click)="loadRooms()">Reintentar</button>
+        </div>
+
+        <div class="row" *ngIf="!loading && !errorMsg">
           <div class="col-md-4 col-lg-3 mb-4" *ngFor="let room of rooms">
             <div class="card h-100" [class.border-success]="room.status === 'A'" [class.border-secondary]="room.status !== 'A'">
               <div class="card-body text-center">
