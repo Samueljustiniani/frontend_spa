@@ -6,15 +6,15 @@ export interface Quote {
   status?: string;
   userId: number;
   userName?: string;
-  serviceId: number;
-  serviceName?: string;
+  serviceIds: number[];
+  serviceNames?: string[];
   roomId: number;
   roomName?: string;
 }
 
 export interface QuoteRequest {
   userId: number;
-  serviceId: number;
+  serviceIds: number[];
   roomId: number;
   quoteDate: string;
   startTime: string;
@@ -29,8 +29,8 @@ export interface QuoteResponse {
   status: string;
   userId: number;
   userName: string;
-  serviceId: number;
-  serviceName: string;
+  serviceIds: number[];
+  serviceNames: string[];
   roomId: number;
   roomName: string;
 }

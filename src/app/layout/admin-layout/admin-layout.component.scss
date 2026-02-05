@@ -1,3 +1,8 @@
+// SPA Color Variables
+$spa-primary: #6B9080;
+$spa-secondary: #A4C3B2;
+$spa-light: #CCE3DE;
+
 .admin-layout {
   display: flex;
   min-height: 100vh;
@@ -19,11 +24,11 @@
   position: fixed;
   left: 0;
   top: 0;
-  background: var(--sidebar-bg, #1c232f);
+  background: linear-gradient(180deg, $spa-primary 0%, darken($spa-primary, 15%) 100%);
   z-index: 1000;
   box-shadow: 0 0 20px rgba(0,0,0,0.1);
   transition: all 0.3s ease;
-  overflow-y: auto;
+  overflow: hidden;
   
   &::-webkit-scrollbar {
     width: 5px;
@@ -43,6 +48,7 @@
   padding: 20px;
   text-align: center;
   border-bottom: 1px solid rgba(255,255,255,0.1);
+  overflow: hidden;
 }
 
 .sidebar-brand {
@@ -55,9 +61,19 @@
   gap: 10px;
   text-decoration: none;
   
+  .brand-logo {
+    width: 40px;
+    height: 40px;
+    max-width: 40px;
+    max-height: 40px;
+    border-radius: 8px;
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+  
   .material-icons {
     font-size: 32px;
-    color: #7267EF;
+    color: $spa-primary;
   }
 }
 
@@ -66,7 +82,7 @@
 }
 
 .nav-label {
-  color: rgba(255,255,255,0.4);
+  color: rgba(255,255,255,0.5);
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -81,7 +97,7 @@
   display: flex;
   align-items: center;
   padding: 12px 15px;
-  color: #b5bdca;
+  color: rgba(255,255,255,0.8);
   border-radius: 8px;
   transition: all 0.3s ease;
   gap: 12px;
@@ -93,13 +109,13 @@
   
   &:hover {
     color: #fff;
-    background: rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.1);
   }
   
   &.active {
     color: #fff;
-    background: linear-gradient(135deg, #7267EF 0%, #9f97f9 100%);
-    box-shadow: 0 5px 15px rgba(114, 103, 239, 0.3);
+    background: rgba(255,255,255,0.2);
+    font-weight: 600;
   }
 }
 
@@ -152,8 +168,8 @@
     transition: all 0.3s ease;
     
     &:focus {
-      border-color: #7267EF;
-      box-shadow: 0 0 0 3px rgba(114, 103, 239, 0.1);
+      border-color: $spa-primary;
+      box-shadow: 0 0 0 3px rgba(107, 144, 128, 0.1);
       outline: none;
     }
   }
@@ -179,7 +195,7 @@
   position: relative;
   
   &:hover {
-    background: #7267EF;
+    background: $spa-primary;
     color: #fff;
   }
   
@@ -217,7 +233,7 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #7267EF 0%, #9f97f9 100%);
+  background: linear-gradient(135deg, $spa-primary 0%, $spa-secondary 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -231,7 +247,7 @@
   height: 40px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid #7267EF;
+  border: 2px solid $spa-primary;
 }
 
 .user-info {
@@ -245,6 +261,53 @@
   small {
     color: #6c757d;
     font-size: 12px;
+  }
+}
+
+// User Dropdown
+.user-dropdown {
+  position: relative;
+  
+  .dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    z-index: 1000;
+    display: none;
+    min-width: 200px;
+    padding: 0.5rem 0;
+    margin: 0.125rem 0 0;
+    background-color: #fff;
+    border: 1px solid rgba(0,0,0,.08);
+    border-radius: 0.5rem;
+    box-shadow: 0 0.5rem 1rem rgba(0,0,0,.15);
+    
+    &.show {
+      display: block;
+    }
+    
+    .dropdown-item {
+      display: flex;
+      align-items: center;
+      padding: 0.5rem 1rem;
+      color: #333;
+      text-decoration: none;
+      transition: background-color 0.2s;
+      
+      &:hover {
+        background-color: #f8f9fa;
+      }
+      
+      .material-icons {
+        font-size: 18px;
+        vertical-align: middle;
+      }
+    }
+    
+    .dropdown-divider {
+      margin: 0.5rem 0;
+      border-top: 1px solid #eee;
+    }
   }
 }
 

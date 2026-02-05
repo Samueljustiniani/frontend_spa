@@ -1,0 +1,154 @@
+<!-- User Layout - SPA Website with Sidebar -->
+<div class="user-layout" [class.sidebar-collapsed]="!sidebarOpen">
+  <!-- Sidebar -->
+  <aside class="sidebar" [class.active]="sidebarOpen">
+    <div class="sidebar-header">
+      <a class="sidebar-brand" routerLink="/">
+        <img src="/img/logo-spa.jpg" alt="SPA Wellness" class="brand-logo">
+        <span>SPA Wellness</span>
+      </a>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-label">Navegacion</div>
+      <ul class="nav flex-column">
+        <ng-container *ngFor="let item of menuItems">
+          <li class="nav-item" *ngIf="!item.authRequired || isAuthenticated()">
+            <a class="nav-link" 
+               [routerLink]="item.route" 
+               routerLinkActive="active"
+               [routerLinkActiveOptions]="{exact: item.route === '/'}">
+              <span class="material-icons">{{ item.icon }}</span>
+              <span>{{ item.label }}</span>
+            </a>
+          </li>
+        </ng-container>
+      </ul>
+    </nav>
+
+    <!-- User section at bottom of sidebar -->
+    <div class="sidebar-footer" *ngIf="isAuthenticated()">
+      <div class="user-card">
+        <ng-container *ngIf="hasPhoto(); else sidebarAvatar">
+          <img [src]="currentUser?.photoUrl" 
+               alt="Avatar" 
+               class="sidebar-avatar-img"
+               referrerpolicy="no-referrer">
+        </ng-container>
+        <ng-template #sidebarAvatar>
+          <div class="avatar-circle">
+            <span>{{ getUserInitials() }}</span>
+          </div>
+        </ng-template>
+        <div class="user-info">
+          <span class="user-name">{{ getDisplayName() }}</span>
+          <a routerLink="/cliente/perfil" class="user-link">Ver perfil</a>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="main-wrapper">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-left">
+        <button class="btn btn-icon" (click)="toggleSidebar()">
+          <span class="material-icons">menu</span>
+        </button>
+        <span class="header-title d-none d-md-inline">Centro de Bienestar</span>
+      </div>
+
+      <div class="header-right">
+        <ng-container *ngIf="isAuthenticated(); else loginButtons">
+          <div class="user-dropdown" [class.show]="userDropdownOpen">
+            <div class="user-profile" (click)="toggleUserDropdown()">
+              <ng-container *ngIf="hasPhoto(); else avatarInitials">
+                <img [src]="currentUser?.photoUrl" 
+                     alt="Avatar" 
+                     class="user-avatar-img"
+                     referrerpolicy="no-referrer">
+              </ng-container>
+              <ng-template #avatarInitials>
+                <div class="avatar-circle">
+                  <span>{{ getUserInitials() }}</span>
+                </div>
+              </ng-template>
+              <span class="d-none d-md-inline ms-2">{{ getDisplayName() }}</span>
+              <span class="material-icons ms-1" style="font-size: 18px;">arrow_drop_down</span>
+            </div>
+            <ul class="dropdown-menu dropdown-menu-end" [class.show]="userDropdownOpen">
+              <li *ngIf="isAdmin()"><a class="dropdown-item" routerLink="/admin/dashboard" (click)="closeUserDropdown()"><span class="material-icons me-2">admin_panel_settings</span>Panel Admin</a></li>
+              <li *ngIf="isAdmin()"><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" routerLink="/cliente/perfil" (click)="closeUserDropdown()"><span class="material-icons me-2">person</span>Mi Perfil</a></li>
+              <li><a class="dropdown-item" routerLink="/cliente/mis-citas" (click)="closeUserDropdown()"><span class="material-icons me-2">event</span>Mis Citas</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item text-danger" (click)="logout()" style="cursor: pointer;"><span class="material-icons me-2">logout</span>Cerrar Sesion</a></li>
+            </ul>
+          </div>
+        </ng-container>
+        <ng-template #loginButtons>
+          <a class="btn btn-outline-primary me-2" routerLink="/auth/signin">Iniciar Sesion</a>
+          <a class="btn btn-primary" routerLink="/auth/signup">Registrarse</a>
+        </ng-template>
+      </div>
+    </header>
+
+    <!-- Page Content -->
+    <main class="main-content">
+      <router-outlet></router-outlet>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container-fluid px-4">
+        <div class="row">
+          <div class="col-lg-4 mb-4">
+            <div class="d-flex align-items-center mb-3">
+              <img src="/img/logo-spa.jpg" alt="SPA Wellness" class="footer-logo me-2">
+              <h5 class="mb-0">SPA Wellness</h5>
+            </div>
+            <p class="text-muted small">
+              Tu espacio de relajacion y bienestar. Ofrecemos los mejores servicios para tu cuidado personal.
+            </p>
+          </div>
+          <div class="col-lg-2 col-md-4 mb-4">
+            <h6 class="mb-3">Enlaces</h6>
+            <ul class="list-unstyled small">
+              <li><a class="text-muted text-decoration-none" routerLink="/">Inicio</a></li>
+              <li><a class="text-muted text-decoration-none" routerLink="/cliente/servicios">Servicios</a></li>
+              <li><a class="text-muted text-decoration-none" routerLink="/cliente/productos">Productos</a></li>
+            </ul>
+          </div>
+          <div class="col-lg-3 col-md-4 mb-4">
+            <h6 class="mb-3">Horarios</h6>
+            <ul class="list-unstyled text-muted small">
+              <li>Lunes - Viernes: 9:00 - 20:00</li>
+              <li>Sabado: 9:00 - 18:00</li>
+              <li>Domingo: 10:00 - 14:00</li>
+            </ul>
+          </div>
+          <div class="col-lg-3 col-md-4 mb-4">
+            <h6 class="mb-3">Contacto</h6>
+            <ul class="list-unstyled text-muted small">
+              <li><span class="material-icons me-1" style="font-size: 14px; vertical-align: middle;">phone</span> +51 999 888 777</li>
+              <li><span class="material-icons me-1" style="font-size: 14px; vertical-align: middle;">email</span> info@spawellness.com</li>
+              <li><span class="material-icons me-1" style="font-size: 14px; vertical-align: middle;">location_on</span> Lima, Peru</li>
+            </ul>
+          </div>
+        </div>
+        <hr>
+        <div class="row align-items-center">
+          <div class="col-md-6 text-center text-md-start">
+            <p class="mb-0 text-muted small">&copy; 2026 SPA Wellness. Todos los derechos reservados.</p>
+          </div>
+          <div class="col-md-6 text-center text-md-end">
+            <a href="#" class="text-muted me-3"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="text-muted me-3"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="text-muted"><i class="fab fa-whatsapp"></i></a>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
+</div>

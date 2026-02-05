@@ -1,0 +1,228 @@
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { QuoteService } from '../../core/services/quote.service';
+import { AuthService } from '../../core/services/auth.service';
+import { QuoteResponse } from '../../core/interfaces/quote.interface';
+import { catchError, finalize, timeout, of } from 'rxjs';
+
+@Component({
+  selector: 'app-my-appointments',
+  standalone: true,
+  imports: [CommonModule, RouterModule],
+  template: `
+    <!-- Page Header -->
+    <section class="page-header py-5 bg-light">
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="col-md-8">
+            <h1 class="fw-bold">Mis Citas</h1>
+            <p class="text-muted lead mb-0">Gestiona tus reservas y citas programadas</p>
+          </div>
+          <div class="col-md-4 text-md-end mt-3 mt-md-0">
+            <a routerLink="/cliente/servicios" class="btn btn-gradient">
+              <i class="material-icons me-1" style="font-size: 18px; vertical-align: middle;">add</i>
+              Nueva Cita
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Content -->
+    <section class="py-5">
+      <div class="container">
+        <!-- Loading -->
+        <div *ngIf="loading" class="text-center py-5">
+          <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;"></div>
+          <p class="mt-3 text-muted">Cargando tus citas...</p>
+        </div>
+
+        <!-- Error Message -->
+        <div *ngIf="!loading && errorMsg" class="alert alert-danger text-center" role="alert">
+          {{ errorMsg }}
+          <button class="btn btn-sm btn-outline-danger ms-2" (click)="loadAppointments()">Reintentar</button>
+        </div>
+
+        <!-- Appointments List -->
+        <div *ngIf="!loading && !errorMsg">
+          <!-- Upcoming Appointments -->
+          <div class="mb-5" *ngIf="upcomingAppointments.length > 0">
+            <h4 class="mb-4">
+              <i class="material-icons me-2 text-primary" style="vertical-align: middle;">event_available</i>
+              Próximas Citas
+            </h4>
+            <div class="row g-4">
+              <div class="col-md-6 col-lg-4" *ngFor="let quote of upcomingAppointments">
+                <div class="card appointment-card border-0 shadow-sm h-100">
+                  <div class="card-header bg-primary text-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <span>{{ quote.quoteDate | date:'dd MMM yyyy' }}</span>
+                      <span class="badge bg-light text-primary">{{ getStatusLabel(quote.status) }}</span>
+                    </div>
+                  </div>
+                  <div class="card-body">
+                    <div class="mb-3">
+                      <i class="material-icons me-2 text-muted" style="font-size: 18px; vertical-align: middle;">schedule</i>
+                      <strong>{{ quote.startTime }} - {{ quote.endTime }}</strong>
+                    </div>
+                    <div class="mb-3">
+                      <i class="material-icons me-2 text-muted" style="font-size: 18px; vertical-align: middle;">spa</i>
+                      <span>{{ quote.serviceNames.join(', ') || 'Servicio' }}</span>
+                    </div>
+                    <div class="mb-3">
+                      <i class="material-icons me-2 text-muted" style="font-size: 18px; vertical-align: middle;">meeting_room</i>
+                      <span>{{ quote.roomName || 'Sala' }}</span>
+                    </div>
+                  </div>
+                  <div class="card-footer bg-white border-top">
+                    <button class="btn btn-outline-danger btn-sm" (click)="cancelAppointment(quote.id)" 
+                            *ngIf="quote.status === 'P' || quote.status === 'PENDIENTE'">
+                      Cancelar Cita
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Past Appointments -->
+          <div *ngIf="pastAppointments.length > 0">
+            <h4 class="mb-4">
+              <i class="material-icons me-2 text-muted" style="vertical-align: middle;">history</i>
+              Historial de Citas
+            </h4>
+            <div class="row g-4">
+              <div class="col-md-6 col-lg-4" *ngFor="let quote of pastAppointments">
+                <div class="card appointment-card border-0 shadow-sm h-100 opacity-75">
+                  <div class="card-header bg-secondary text-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <span>{{ quote.quoteDate | date:'dd MMM yyyy' }}</span>
+                      <span class="badge bg-light text-secondary">{{ getStatusLabel(quote.status) }}</span>
+                    </div>
+                  </div>
+                  <div class="card-body">
+                    <div class="mb-2">
+                      <i class="material-icons me-2 text-muted" style="font-size: 18px; vertical-align: middle;">schedule</i>
+                      {{ quote.startTime }} - {{ quote.endTime }}
+                    </div>
+                    <div class="mb-2">
+                      <i class="material-icons me-2 text-muted" style="font-size: 18px; vertical-align: middle;">spa</i>
+                      {{ quote.serviceNames.join(', ') || 'Servicio' }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- No Appointments -->
+          <div *ngIf="appointments.length === 0" class="text-center py-5">
+            <i class="material-icons text-muted" style="font-size: 80px;">event_busy</i>
+            <h4 class="mt-4">No tienes citas registradas</h4>
+            <p class="text-muted mb-4">¡Reserva tu primera cita y disfruta de nuestros servicios!</p>
+            <a routerLink="/cliente/servicios" class="btn btn-gradient btn-lg">
+              Ver Servicios
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  `,
+  styles: [`
+    .page-header {
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    }
+    .appointment-card {
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .btn-gradient {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border: none;
+      color: white;
+      border-radius: 25px;
+      padding: 10px 25px;
+    }
+    .btn-gradient:hover {
+      color: white;
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+  `]
+})
+export class MyAppointmentsComponent implements OnInit {
+  appointments: QuoteResponse[] = [];
+  loading = false;
+  errorMsg = '';
+
+  constructor(
+    private quoteService: QuoteService,
+    private authService: AuthService
+  ) {}
+
+  ngOnInit(): void {
+    this.loadAppointments();
+  }
+
+  loadAppointments(): void {
+    this.loading = true;
+    this.errorMsg = '';
+    
+    const user = this.authService.getCurrentUserValue();
+    if (!user?.id) {
+      this.loading = false;
+      this.errorMsg = 'No se pudo obtener la información del usuario.';
+      return;
+    }
+
+    this.quoteService.getByUserId(user.id).pipe(
+      timeout(10000),
+      catchError((err) => {
+        this.errorMsg = err.name === 'TimeoutError' 
+          ? 'La carga está tardando demasiado. Intenta más tarde.'
+          : 'Ocurrió un error al cargar tus citas.';
+        return of([]);
+      }),
+      finalize(() => this.loading = false)
+    ).subscribe((data) => {
+      this.appointments = data;
+    });
+  }
+
+  get upcomingAppointments(): QuoteResponse[] {
+    const today = new Date().toISOString().split('T')[0];
+    return this.appointments.filter(q => 
+      q.quoteDate >= today && 
+      (q.status === 'P' || q.status === 'PENDIENTE' || q.status === 'CONFIRMADA')
+    );
+  }
+
+  get pastAppointments(): QuoteResponse[] {
+    const today = new Date().toISOString().split('T')[0];
+    return this.appointments.filter(q => 
+      q.quoteDate < today || 
+      q.status === 'COMPLETADA' || 
+      q.status === 'CANCELADA'
+    );
+  }
+
+  getStatusLabel(status: string): string {
+    switch (status) {
+      case 'P':
+      case 'PENDIENTE': return 'Pendiente';
+      case 'CONFIRMADA': return 'Confirmada';
+      case 'COMPLETADA': return 'Completada';
+      case 'CANCELADA': return 'Cancelada';
+      default: return status;
+    }
+  }
+
+  cancelAppointment(id: number): void {
+    if (confirm('¿Estás seguro de cancelar esta cita?')) {
+      this.quoteService.cancel(id).subscribe({
+        next: () => this.loadAppointments(),
+        error: (err) => console.error('Error cancelling appointment:', err)
+      });
+    }
+  }
+}

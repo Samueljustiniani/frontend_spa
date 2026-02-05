@@ -14,15 +14,16 @@ import { User } from '../../core/interfaces';
 export class AdminLayoutComponent implements OnInit {
   sidebarOpen = true;
   currentUser: User | null = null;
+  userDropdownOpen = false;
 
   menuItems = [
-    { label: 'Dashboard', icon: 'dashboard', route: '/dashboard', roles: ['ADMIN', 'USER'] },
-    { label: 'Productos', icon: 'inventory_2', route: '/products', roles: ['ADMIN', 'USER'] },
-    { label: 'Servicios', icon: 'spa', route: '/services', roles: ['ADMIN'] },
-    { label: 'Salas', icon: 'meeting_room', route: '/rooms', roles: ['ADMIN'] },
-    { label: 'Citas', icon: 'event', route: '/quotes', roles: ['ADMIN', 'USER'] },
-    { label: 'Ventas', icon: 'point_of_sale', route: '/sales', roles: ['ADMIN'] },
-    { label: 'Clientes', icon: 'people', route: '/customers', roles: ['ADMIN'] }
+    { label: 'Dashboard', icon: 'dashboard', route: '/admin/dashboard', roles: ['ADMIN', 'USER'] },
+    { label: 'Productos', icon: 'inventory_2', route: '/admin/products', roles: ['ADMIN', 'USER'] },
+    { label: 'Servicios', icon: 'spa', route: '/admin/services', roles: ['ADMIN'] },
+    { label: 'Salas', icon: 'meeting_room', route: '/admin/rooms', roles: ['ADMIN'] },
+    { label: 'Citas', icon: 'event', route: '/admin/quotes', roles: ['ADMIN', 'USER'] },
+    { label: 'Ventas', icon: 'point_of_sale', route: '/admin/sales', roles: ['ADMIN'] },
+    { label: 'Clientes', icon: 'people', route: '/admin/customers', roles: ['ADMIN'] }
   ];
 
   constructor(
@@ -51,6 +52,14 @@ export class AdminLayoutComponent implements OnInit {
 
   toggleSidebar(): void {
     this.sidebarOpen = !this.sidebarOpen;
+  }
+
+  toggleUserDropdown(): void {
+    this.userDropdownOpen = !this.userDropdownOpen;
+  }
+
+  closeUserDropdown(): void {
+    this.userDropdownOpen = false;
   }
 
   logout(): void {

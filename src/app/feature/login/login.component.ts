@@ -15,7 +15,7 @@ export class LoginComponent {
   form: FormGroup;
   loading = false;
   error = '';
-  returnUrl = '/dashboard';
+  returnUrl = '/admin/dashboard';
 
   constructor(
     private fb: FormBuilder,
@@ -25,7 +25,7 @@ export class LoginComponent {
   ) {
     // Si ya está autenticado, redirigir
     if (this.authService.isAuthenticated()) {
-      this.router.navigate(['/dashboard']);
+      this.router.navigate(['/admin/dashboard']);
     }
 
     this.form = this.fb.group({
@@ -33,7 +33,7 @@ export class LoginComponent {
       password: ['', Validators.required]
     });
 
-    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/dashboard';
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/admin/dashboard';
   }
 
   onSubmit(): void {
@@ -49,12 +49,17 @@ export class LoginComponent {
       next: () => {
         // Después del login, obtener los datos del usuario
         this.authService.getCurrentUser().subscribe({
-          next: () => {
-            this.router.navigate([this.returnUrl]);
+          next: (user) => {
+            // Redirigir según el rol del usuario
+            if (user?.role === 'ADMIN' || user?.role === 'ROLE_ADMIN') {
+              this.router.navigate(['/admin/dashboard']);
+            } else {
+              this.router.navigate(['/']);
+            }
           },
           error: () => {
-            // Aún así redirigir, los datos se cargarán después
-            this.router.navigate([this.returnUrl]);
+            // Si no se puede obtener el usuario, ir a home
+            this.router.navigate(['/']);
           }
         });
       },

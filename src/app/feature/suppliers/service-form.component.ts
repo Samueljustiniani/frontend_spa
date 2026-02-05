@@ -41,6 +41,23 @@ import { SpaServiceService } from '../../core/services/spa-service.service';
                   </div>
                 </div>
               </div>
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Género *</label>
+                  <select class="form-select" formControlName="gender">
+                    <option value="U">Unisex</option>
+                    <option value="M">Masculino</option>
+                    <option value="F">Femenino</option>
+                  </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Estado *</label>
+                  <select class="form-select" formControlName="status">
+                    <option value="A">Activo</option>
+                    <option value="I">Inactivo</option>
+                  </select>
+                </div>
+              </div>
               <div class="d-flex gap-2">
                 <button type="submit" class="btn btn-primary" [disabled]="submitting">
                   {{ isEdit ? 'Actualizar' : 'Crear' }}
@@ -72,7 +89,9 @@ export class ServiceFormComponent implements OnInit {
       name: ['', Validators.required],
       description: [''],
       durationMinutes: [60, [Validators.required, Validators.min(1)]],
-      price: [0, [Validators.required, Validators.min(0)]]
+      price: [0, [Validators.required, Validators.min(0)]],
+      gender: ['U', Validators.required],
+      status: ['A', Validators.required]
     });
 
     const id = this.route.snapshot.params['id'];

@@ -11,15 +11,26 @@ export class AuthGuard implements CanActivate {
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
     if (this.authService.isAuthenticated()) {
+      const userRole = this.authService.getUserRole();
+      
+      // Verificar si es una ruta de admin
+      if (state.url.startsWith('/admin')) {
+        if (userRole === 'ADMIN' || userRole === 'ROLE_ADMIN') {
+          return true;
+        }
+        // Usuario normal no puede acceder a admin
+        this.router.navigate(['/']);
+        return false;
+      }
+      
       // Verificar roles si se especifican en la ruta
       const requiredRoles = route.data['roles'] as string[] | undefined;
       if (requiredRoles) {
-        const userRole = this.authService.getUserRole();
         if (userRole && requiredRoles.includes(userRole)) {
           return true;
         }
         // Usuario no tiene el rol requerido
-        this.router.navigate(['/dashboard']);
+        this.router.navigate(['/']);
         return false;
       }
       return true;

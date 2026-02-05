@@ -3,7 +3,7 @@
   <aside class="sidebar" [class.active]="sidebarOpen">
     <div class="sidebar-header">
       <a class="sidebar-brand" routerLink="/dashboard">
-        <span class="material-icons">spa</span>
+        <img src="/img/logo-spa.jpg" alt="SPA Admin" class="brand-logo">
         <span>SPA Admin</span>
       </a>
     </div>
@@ -46,31 +46,32 @@
           <span class="badge">3</span>
         </div>
 
-        <!-- Logout Button -->
-        <button class="btn btn-outline-danger btn-sm d-flex align-items-center gap-1" (click)="logout()">
-          <span class="material-icons" style="font-size: 18px;">logout</span>
-          <span class="d-none d-md-inline">Salir</span>
-        </button>
-
-        <div class="user-profile">
-          <div class="d-flex align-items-center">
-            <!-- Foto de perfil si existe -->
-            @if (hasPhoto()) {
-              <img [src]="currentUser?.photoUrl" 
-                   alt="Avatar" 
-                   class="user-avatar-img"
-                   referrerpolicy="no-referrer">
-            } @else {
-              <!-- Iniciales si no hay foto -->
-              <div class="user-avatar">
-                {{ getUserInitials() }}
+        <!-- User Dropdown -->
+        <div class="user-dropdown" [class.show]="userDropdownOpen">
+          <div class="user-profile" (click)="toggleUserDropdown()" style="cursor: pointer;">
+            <div class="d-flex align-items-center">
+              @if (hasPhoto()) {
+                <img [src]="currentUser?.photoUrl" 
+                     alt="Avatar" 
+                     class="user-avatar-img"
+                     referrerpolicy="no-referrer">
+              } @else {
+                <div class="user-avatar">
+                  {{ getUserInitials() }}
+                </div>
+              }
+              <div class="user-info ms-2 d-none d-md-block">
+                <h6>{{ getDisplayName() }}</h6>
+                <small>{{ getRoleLabel() }}</small>
               </div>
-            }
-            <div class="user-info ms-2 d-none d-md-block">
-              <h6>{{ getDisplayName() }}</h6>
-              <small>{{ getRoleLabel() }}</small>
+              <span class="material-icons ms-2" style="font-size: 18px;">arrow_drop_down</span>
             </div>
           </div>
+          <ul class="dropdown-menu dropdown-menu-end" [class.show]="userDropdownOpen">
+            <li><a class="dropdown-item" routerLink="/" (click)="closeUserDropdown()"><span class="material-icons me-2">public</span>Ver Sitio Web</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item text-danger" (click)="logout()" style="cursor: pointer;"><span class="material-icons me-2">logout</span>Cerrar Sesión</a></li>
+          </ul>
         </div>
       </div>
     </header>

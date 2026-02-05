@@ -8,15 +8,48 @@
         </a>
       </div>
       <div class="card-body">
+        <!-- Filters Row -->
+        <div class="row mb-3 g-2">
+          <div class="col-md-4">
+            <input type="text" class="form-control" placeholder="Buscar servicio..." 
+                   [(ngModel)]="searchTerm">
+          </div>
+          <div class="col-md-4">
+            <div class="btn-group w-100" role="group">
+              <button type="button" class="btn" 
+                      [class]="statusFilter === '' ? 'btn-primary' : 'btn-outline-primary'"
+                      (click)="statusFilter = ''; onFilterChange()">
+                Todos
+              </button>
+              <button type="button" class="btn" 
+                      [class]="statusFilter === 'A' ? 'btn-success' : 'btn-outline-success'"
+                      (click)="statusFilter = 'A'; onFilterChange()">
+                Activos
+              </button>
+              <button type="button" class="btn" 
+                      [class]="statusFilter === 'I' ? 'btn-secondary' : 'btn-outline-secondary'"
+                      (click)="statusFilter = 'I'; onFilterChange()">
+                Inactivos
+              </button>
+            </div>
+          </div>
+        </div>
+
         <div *ngIf="loading" class="text-center py-4">
           <div class="spinner-border text-primary" role="status"></div>
         </div>
-
-        <div class="row" *ngIf="!loading">
-          <div class="col-md-6 col-lg-4 mb-4" *ngFor="let service of services">
-            <div class="card h-100 border-primary">
-              <div class="card-header bg-primary text-white">
-                <h5 class="mb-0">{{ service.name }}</h5>
+        <div *ngIf="!loading && errorMsg" class="alert alert-danger text-center" role="alert">
+          {{ errorMsg }}
+          <button class="btn btn-sm btn-outline-danger ms-2" (click)="loadServices()">Reintentar</button>
+        </div>
+        <div class="row" *ngIf="!loading && !errorMsg">
+          <div class="col-md-6 col-lg-4 mb-4" *ngFor="let service of filteredServices">
+            <div class="card h-100" [class.border-primary]="service.status === 'A'" [class.border-secondary]="service.status !== 'A'">
+              <div class="card-header text-white" [class.bg-primary]="service.status === 'A'" [class.bg-secondary]="service.status !== 'A'">
+                <div class="d-flex justify-content-between align-items-center">
+                  <h5 class="mb-0">{{ service.name }}</h5>
+                  <span class="badge bg-light text-dark">{{ getGenderLabel(service.gender) }}</span>
+                </div>
               </div>
               <div class="card-body">
                 <p class="card-text">{{ service.description || 'Sin descripción' }}</p>
@@ -25,6 +58,11 @@
                     <i class="feather icon-clock me-1"></i>{{ service.durationMinutes }} min
                   </span>
                   <span class="text-success fw-bold fs-5">S/. {{ service.price | number:'1.2-2' }}</span>
+                </div>
+                <div class="mt-2">
+                  <span [class]="service.status === 'A' ? 'badge bg-success' : 'badge bg-secondary'">
+                    {{ service.status === 'A' ? 'Activo' : 'Inactivo' }}
+                  </span>
                 </div>
               </div>
               <div class="card-footer bg-transparent">
@@ -37,7 +75,7 @@
               </div>
             </div>
           </div>
-          <div class="col-12" *ngIf="services.length === 0">
+          <div class="col-12" *ngIf="filteredServices.length === 0">
             <p class="text-center text-muted py-4">No hay servicios registrados</p>
           </div>
         </div>

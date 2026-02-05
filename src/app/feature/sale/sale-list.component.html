@@ -44,7 +44,7 @@
                 <td>{{ sale.saleDate | date:'dd/MM/yyyy HH:mm' }}</td>
                 <td>{{ sale.userName }}</td>
                 <td>
-                  <span class="badge bg-info">{{ sale.details?.length ?? 0 }} items</span>
+                  <span class="badge bg-info">{{ sale.details.length }} items</span>
                 </td>
                 <td class="text-success fw-bold">S/. {{ sale.total | number:'1.2-2' }}</td>
                 <td>

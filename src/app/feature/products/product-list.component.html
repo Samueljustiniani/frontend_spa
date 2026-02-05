@@ -8,11 +8,30 @@
         </a>
       </div>
       <div class="card-body">
-        <!-- Search -->
-        <div class="row mb-3">
+        <!-- Filters Row -->
+        <div class="row mb-3 g-2">
           <div class="col-md-4">
             <input type="text" class="form-control" placeholder="Buscar producto..." 
                    [(ngModel)]="searchTerm">
+          </div>
+          <div class="col-md-4">
+            <div class="btn-group w-100" role="group">
+              <button type="button" class="btn" 
+                      [class]="statusFilter === '' ? 'btn-primary' : 'btn-outline-primary'"
+                      (click)="statusFilter = ''; onFilterChange()">
+                Todos
+              </button>
+              <button type="button" class="btn" 
+                      [class]="statusFilter === 'A' ? 'btn-success' : 'btn-outline-success'"
+                      (click)="statusFilter = 'A'; onFilterChange()">
+                Activos
+              </button>
+              <button type="button" class="btn" 
+                      [class]="statusFilter === 'I' ? 'btn-secondary' : 'btn-outline-secondary'"
+                      (click)="statusFilter = 'I'; onFilterChange()">
+                Inactivos
+              </button>
+            </div>
           </div>
         </div>
 
@@ -23,8 +42,14 @@
           </div>
         </div>
 
+        <!-- Error Message -->
+        <div *ngIf="!loading && errorMsg" class="alert alert-danger text-center" role="alert">
+          {{ errorMsg }}
+          <button class="btn btn-sm btn-outline-danger ms-2" (click)="loadProducts()">Reintentar</button>
+        </div>
+
         <!-- Table -->
-        <div class="table-responsive" *ngIf="!loading">
+        <div class="table-responsive" *ngIf="!loading && !errorMsg">
           <table class="table table-hover">
             <thead>
               <tr>
@@ -47,7 +72,7 @@
                   <span *ngIf="!product.imageUrl" class="badge bg-secondary">Sin imagen</span>
                 </td>
                 <td><strong>{{ product.name }}</strong></td>
-                <td>{{ product.description | slice:0:50 }}{{ (product.description?.length ?? 0) > 50 ? '...' : '' }}</td>
+                <td>{{ product.description | slice:0:50 }}{{ product.description.length > 50 ? '...' : '' }}</td>
                 <td class="text-success fw-bold">S/. {{ product.price | number:'1.2-2' }}</td>
                 <td>
                   <span [class]="product.stock > 10 ? 'badge bg-success' : product.stock > 0 ? 'badge bg-warning' : 'badge bg-danger'">

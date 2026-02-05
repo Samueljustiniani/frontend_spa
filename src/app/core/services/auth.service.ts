@@ -44,6 +44,11 @@ export class AuthService {
     this.currentUserSubject.next(user);
   }
 
+  // Obtener el usuario actual de forma sincrónica
+  getCurrentUserValue(): User | null {
+    return this.currentUserSubject.value;
+  }
+
   logout(): void {
     localStorage.removeItem(this.tokenKey);
     localStorage.removeItem(this.userKey);

@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ProductService } from '../../core/services/product.service';
 import { Product } from '../../core/interfaces/product.interface';
+import { catchError, finalize, timeout, of } from 'rxjs';
 
 @Component({
   selector: 'app-product-list',
@@ -15,7 +16,9 @@ import { Product } from '../../core/interfaces/product.interface';
 export class ProductListComponent implements OnInit {
   products: Product[] = [];
   loading = false;
+  errorMsg = '';
   searchTerm = '';
+  statusFilter = ''; // '', 'A', 'I'
 
   constructor(private productService: ProductService) {}
 
@@ -25,16 +28,33 @@ export class ProductListComponent implements OnInit {
 
   loadProducts(): void {
     this.loading = true;
-    this.productService.list().subscribe({
-      next: (data) => {
-        this.products = data;
-        this.loading = false;
-      },
-      error: (err) => {
+    this.errorMsg = '';
+    
+    const request$ = this.statusFilter 
+      ? this.productService.list(this.statusFilter)
+      : this.productService.list();
+
+    request$.pipe(
+      timeout(10000),
+      catchError((err) => {
+        if (err.name === 'TimeoutError') {
+          this.errorMsg = 'La carga está tardando demasiado. Verifica tu conexión o intenta más tarde.';
+        } else {
+          this.errorMsg = 'Ocurrió un error al cargar los productos.';
+        }
         console.error('Error loading products:', err);
+        return of([]);
+      }),
+      finalize(() => {
         this.loading = false;
-      }
+      })
+    ).subscribe((data) => {
+      this.products = data;
     });
+  }
+
+  onFilterChange(): void {
+    this.loadProducts();
   }
 
   deleteProduct(id: number): void {

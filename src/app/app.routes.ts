@@ -8,9 +8,27 @@ export const routes: Routes = [
     loadChildren: () => import('./feature/login/auth.routes').then(m => m.AUTH_ROUTES)
   },
 
-  // Rutas protegidas con Admin Layout
+  // Rutas públicas para clientes con User Layout
   {
     path: '',
+    loadComponent: () => import('./layout/user-layout/user-layout.component').then(m => m.UserLayoutComponent),
+    children: [
+      // Home - página principal pública
+      {
+        path: '',
+        loadComponent: () => import('./feature/cliente/home.component').then(m => m.HomeComponent)
+      },
+      // Rutas de cliente
+      {
+        path: 'cliente',
+        loadChildren: () => import('./feature/cliente/cliente.routes').then(m => m.CLIENTE_ROUTES)
+      }
+    ]
+  },
+
+  // Rutas protegidas con Admin Layout
+  {
+    path: 'admin',
     loadComponent: () => import('./layout/admin-layout/admin-layout.component').then(m => m.AdminLayoutComponent),
     canActivate: [AuthGuard],
     children: [
@@ -66,5 +84,5 @@ export const routes: Routes = [
   },
 
   // Redirigir rutas no encontradas
-  { path: '**', redirectTo: '/dashboard' }
+  { path: '**', redirectTo: '/' }
 ];

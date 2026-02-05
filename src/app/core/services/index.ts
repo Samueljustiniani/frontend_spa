@@ -5,3 +5,4 @@ export * from './sale.service';
 export * from './quote.service';
 export * from './room.service';
 export * from './spa-service.service';
+export * from './work-schedule.service';
