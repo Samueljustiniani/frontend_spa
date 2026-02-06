@@ -14,7 +14,7 @@ import { SpaServiceService } from '../../core/services/spa-service.service';
         <div class="card">
           <div class="card-header">
             <h5 class="mb-0">
-              <i class="feather icon-award me-2"></i>
+              <i class="material-icons me-2" style="vertical-align: middle;">spa</i>
               {{ isEdit ? 'Editar Servicio' : 'Nuevo Servicio' }}
             </h5>
           </div>

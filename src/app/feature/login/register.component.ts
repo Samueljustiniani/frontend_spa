@@ -14,7 +14,7 @@ import { AuthService } from '../../core/services/auth.service';
         <div class="card">
           <div class="card-body text-center">
             <div class="mb-4">
-              <i class="feather icon-user-plus auth-icon"></i>
+              <i class="material-icons auth-icon" style="font-size: 72px; color: #6B9080;">person_add</i>
             </div>
             <h3 class="mb-4">Crear Cuenta</h3>
 

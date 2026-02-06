@@ -2,9 +2,9 @@
   <div class="col-12">
     <div class="card">
       <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="mb-0"><i class="feather icon-box me-2"></i>Productos</h5>
+        <h5 class="mb-0"><i class="material-icons me-2" style="vertical-align: middle;">inventory_2</i>Productos</h5>
         <a routerLink="new" class="btn btn-primary btn-sm">
-          <i class="feather icon-plus me-1"></i>Nuevo Producto
+          <i class="material-icons me-1" style="font-size: 18px; vertical-align: middle;">add</i>Nuevo Producto
         </a>
       </div>
       <div class="card-body">
@@ -85,11 +85,11 @@
                   </span>
                 </td>
                 <td class="text-center">
-                  <a [routerLink]="[product.id, 'edit']" class="btn btn-icon btn-outline-primary btn-sm me-1" title="Editar">
-                    <i class="feather icon-edit"></i>
+                  <a [routerLink]="[product.id, 'edit']" class="btn btn-outline-primary btn-sm me-1" title="Editar">
+                    <i class="material-icons" style="font-size: 18px; vertical-align: middle;">edit</i>
                   </a>
-                  <button (click)="deleteProduct(product.id)" class="btn btn-icon btn-outline-danger btn-sm" title="Eliminar">
-                    <i class="feather icon-trash-2"></i>
+                  <button (click)="deleteProduct(product.id)" class="btn btn-outline-danger btn-sm" title="Eliminar">
+                    <i class="material-icons" style="font-size: 18px; vertical-align: middle;">delete</i>
                   </button>
                 </td>
               </tr>

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
+import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { QuoteService } from '../../core/services/quote.service';
 import { RoomService } from '../../core/services/room.service';
 import { SpaServiceService } from '../../core/services/spa-service.service';
@@ -25,6 +25,8 @@ export class QuoteFormComponent implements OnInit {
   loading = false;
   submitting = false;
   availabilityMessage = '';
+  isEdit = false;
+  quoteId: number | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -32,18 +34,27 @@ export class QuoteFormComponent implements OnInit {
     private roomService: RoomService,
     private spaService: SpaServiceService,
     private userService: UserService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
     this.initForm();
     this.loadData();
+    
+    // Check if editing
+    const id = this.route.snapshot.paramMap.get('id');
+    if (id) {
+      this.isEdit = true;
+      this.quoteId = +id;
+      this.loadQuote(this.quoteId);
+    }
   }
 
   initForm(): void {
     this.form = this.fb.group({
       userId: [null, Validators.required],
-      serviceId: [null, Validators.required],
+      serviceIds: [[], Validators.required],
       roomId: [null, Validators.required],
       quoteDate: ['', Validators.required],
       startTime: ['', Validators.required],
@@ -61,6 +72,25 @@ export class QuoteFormComponent implements OnInit {
         this.loading = false;
       },
       error: () => this.loading = false
+    });
+  }
+
+  loadQuote(id: number): void {
+    this.quoteService.getById(id).subscribe({
+      next: (quote) => {
+        this.form.patchValue({
+          userId: quote.userId,
+          serviceIds: quote.serviceIds || [],
+          roomId: quote.roomId,
+          quoteDate: quote.quoteDate,
+          startTime: quote.startTime?.substring(0, 5),
+          endTime: quote.endTime?.substring(0, 5)
+        });
+      },
+      error: (err) => {
+        console.error('Error loading quote:', err);
+        this.router.navigate(['/admin/quotes']);
+      }
     });
   }
 
@@ -85,11 +115,21 @@ export class QuoteFormComponent implements OnInit {
     }
 
     this.submitting = true;
-    this.quoteService.create(this.form.value).subscribe({
-      next: () => this.router.navigate(['/quotes']),
+    
+    const quoteData = {
+      ...this.form.value,
+      serviceIds: this.form.value.serviceIds || []
+    };
+    
+    const operation = this.isEdit && this.quoteId
+      ? this.quoteService.update(this.quoteId, quoteData)
+      : this.quoteService.create(quoteData);
+      
+    operation.subscribe({
+      next: () => this.router.navigate(['/admin/quotes']),
       error: (err) => {
-        console.error('Error creating quote:', err);
-        alert(err.error?.message || 'Error al crear la cita');
+        console.error('Error saving quote:', err);
+        alert(err.error?.message || 'Error al guardar la cita');
         this.submitting = false;
       }
     });

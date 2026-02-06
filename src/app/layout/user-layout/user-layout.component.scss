@@ -343,19 +343,219 @@ $spa-earth: #8B7355;
 
 // Footer
 .footer {
-  background: #2d3436;
+  background: #5c6b63;
   color: #fff;
-  padding: 2rem 0 1rem;
   
-  h5, h6 {
-    color: #fff;
+  .footer-map {
+    width: 100%;
+    iframe {
+      display: block;
+      filter: grayscale(20%);
+    }
   }
   
-  a {
-    transition: color 0.3s ease;
+  .footer-content {
+    padding: 3rem 0 2rem;
+  }
+  
+  .footer-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 1rem;
+    
+    .footer-logo {
+      width: 60px;
+      height: 60px;
+      border-radius: 10px;
+      object-fit: cover;
+    }
+    
+    h5 {
+      margin: 0;
+      font-weight: 600;
+      font-size: 1.3rem;
+    }
+  }
+  
+  .footer-description {
+    color: rgba(255,255,255,0.85);
+    font-size: 0.9rem;
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+  }
+  
+  .social-links {
+    display: flex;
+    gap: 12px;
+    
+    .social-link {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      transition: all 0.3s ease;
+      
+      .material-icons {
+        font-size: 20px;
+      }
+      
+      &:hover {
+        background: $spa-secondary;
+        transform: translateY(-3px);
+      }
+    }
+  }
+  
+  .footer-title {
+    color: #fff;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    position: relative;
+    
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 0;
+      width: 40px;
+      height: 2px;
+      background: $spa-secondary;
+    }
+  }
+  
+  .footer-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    
+    li {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 15px;
+      color: rgba(255,255,255,0.9);
+      font-size: 0.95rem;
+      
+      .material-icons {
+        font-size: 20px;
+        color: $spa-secondary;
+        margin-top: 2px;
+      }
+    }
+    
+    .map-link {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: rgba(255,255,255,0.9);
+      text-decoration: none;
+      transition: color 0.3s ease;
+      
+      &:hover {
+        color: $spa-secondary;
+      }
+    }
+  }
+  
+  .footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    
+    li {
+      margin-bottom: 12px;
+      
+      a {
+        color: rgba(255,255,255,0.85);
+        text-decoration: none;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        display: inline-block;
+        
+        &:hover {
+          color: $spa-secondary;
+          transform: translateX(5px);
+        }
+      }
+    }
+  }
+  
+  .schedule-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    margin-bottom: 20px;
+    
+    .schedule-icon {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      border: 2px solid $spa-secondary;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      
+      .material-icons {
+        font-size: 22px;
+        color: $spa-secondary;
+      }
+    }
+    
+    .schedule-info {
+      display: flex;
+      flex-direction: column;
+      
+      strong {
+        font-size: 0.95rem;
+        margin-bottom: 3px;
+      }
+      
+      span {
+        color: rgba(255,255,255,0.8);
+        font-size: 0.9rem;
+      }
+    }
+  }
+  
+  .btn-contact {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: transparent;
+    border: 2px solid $spa-secondary;
+    color: #fff;
+    padding: 12px 25px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+    
+    .material-icons {
+      font-size: 22px;
+    }
     
     &:hover {
-      color: $spa-secondary !important;
+      background: $spa-secondary;
+      color: #fff;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(164, 195, 178, 0.4);
+    }
+  }
+  
+  .footer-bottom {
+    background: rgba(0,0,0,0.2);
+    padding: 1rem 0;
+    
+    p {
+      color: rgba(255,255,255,0.7);
+      font-size: 0.85rem;
     }
   }
 }

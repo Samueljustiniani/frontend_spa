@@ -68,18 +68,21 @@ export class QuoteListComponent implements OnInit {
 
   cancelQuote(id: number): void {
     if (confirm('¿Estás seguro de cancelar esta cita?')) {
-      this.quoteService.cancel(id).subscribe({
+      this.quoteService.updateStatus(id, 'C').subscribe({
         next: () => this.loadQuotes(),
         error: (err) => console.error('Error canceling quote:', err)
       });
     }
   }
 
-  confirmQuote(id: number): void {
-    this.quoteService.updateStatus(id, 'A').subscribe({
-      next: () => this.loadQuotes(),
-      error: (err) => console.error('Error confirming quote:', err)
-    });
+  changeStatus(id: number, status: string): void {
+    const statusLabel = status === 'A' ? 'confirmar' : status === 'P' ? 'poner pendiente' : 'cambiar';
+    if (confirm(`¿Estás seguro de ${statusLabel} esta cita?`)) {
+      this.quoteService.updateStatus(id, status).subscribe({
+        next: () => this.loadQuotes(),
+        error: (err) => console.error('Error changing quote status:', err)
+      });
+    }
   }
 
   getStatusClass(status: string): string {

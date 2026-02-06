@@ -39,12 +39,17 @@ export class QuoteService {
     return this.http.post<QuoteResponse>(this.API_URL, quote);
   }
 
+  update(id: number, quote: QuoteRequest): Observable<QuoteResponse> {
+    return this.http.put<QuoteResponse>(`${this.API_URL}/${id}`, quote);
+  }
+
   updateStatus(id: number, status: string): Observable<QuoteResponse> {
-    return this.http.patch<QuoteResponse>(`${this.API_URL}/${id}/status`, { status });
+    const params = new HttpParams().set('status', status);
+    return this.http.patch<QuoteResponse>(`${this.API_URL}/${id}/status`, null, { params });
   }
 
   cancel(id: number): Observable<QuoteResponse> {
-    return this.http.patch<QuoteResponse>(`${this.API_URL}/${id}/cancel`, {});
+    return this.updateStatus(id, 'C');
   }
 
   delete(id: number): Observable<void> {

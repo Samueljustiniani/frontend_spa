@@ -106,4 +106,18 @@ export class AuthService {
       return null;
     }
   }
+
+  getCurrentUserId(): number | null {
+    const user = this.currentUserSubject.value;
+    if (user?.id) return user.id;
+    
+    const token = this.getToken();
+    if (!token) return null;
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload.userId || payload.sub || null;
+    } catch {
+      return null;
+    }
+  }
 }

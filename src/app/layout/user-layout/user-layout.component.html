@@ -101,51 +101,112 @@
 
     <!-- Footer -->
     <footer class="footer">
-      <div class="container-fluid px-4">
-        <div class="row">
-          <div class="col-lg-4 mb-4">
-            <div class="d-flex align-items-center mb-3">
-              <img src="/img/logo-spa.jpg" alt="SPA Wellness" class="footer-logo me-2">
-              <h5 class="mb-0">SPA Wellness</h5>
+      <!-- Main Footer Content -->
+      <div class="footer-content">
+        <div class="container-fluid px-4">
+          <div class="row g-4">
+            <!-- Brand & Description -->
+            <div class="col-lg-3 col-md-6">
+              <div class="footer-brand">
+                <img src="/img/logo-spa.jpg" alt="SPA Wellness" class="footer-logo">
+                <h5>SPA Wellness</h5>
+              </div>
+              <p class="footer-description">
+                Regálate un momento para consentirte porque te lo mereces. 
+                Encuentra en SPA Wellness un oasis de calma y una amplia variedad de 
+                tratamientos y rituales de relajación.
+              </p>
+              <div class="social-links">
+                <a href="https://www.instagram.com/" target="_blank" class="social-link" title="Instagram">
+                  <i class="material-icons">photo_camera</i>
+                </a>
+                <a href="https://www.tiktok.com/" target="_blank" class="social-link" title="TikTok">
+                  <i class="material-icons">music_note</i>
+                </a>
+                <a href="https://www.facebook.com/" target="_blank" class="social-link" title="Facebook">
+                  <i class="material-icons">thumb_up</i>
+                </a>
+              </div>
             </div>
-            <p class="text-muted small">
-              Tu espacio de relajacion y bienestar. Ofrecemos los mejores servicios para tu cuidado personal.
-            </p>
-          </div>
-          <div class="col-lg-2 col-md-4 mb-4">
-            <h6 class="mb-3">Enlaces</h6>
-            <ul class="list-unstyled small">
-              <li><a class="text-muted text-decoration-none" routerLink="/">Inicio</a></li>
-              <li><a class="text-muted text-decoration-none" routerLink="/cliente/servicios">Servicios</a></li>
-              <li><a class="text-muted text-decoration-none" routerLink="/cliente/productos">Productos</a></li>
-            </ul>
-          </div>
-          <div class="col-lg-3 col-md-4 mb-4">
-            <h6 class="mb-3">Horarios</h6>
-            <ul class="list-unstyled text-muted small">
-              <li>Lunes - Viernes: 9:00 - 20:00</li>
-              <li>Sabado: 9:00 - 18:00</li>
-              <li>Domingo: 10:00 - 14:00</li>
-            </ul>
-          </div>
-          <div class="col-lg-3 col-md-4 mb-4">
-            <h6 class="mb-3">Contacto</h6>
-            <ul class="list-unstyled text-muted small">
-              <li><span class="material-icons me-1" style="font-size: 14px; vertical-align: middle;">phone</span> +51 999 888 777</li>
-              <li><span class="material-icons me-1" style="font-size: 14px; vertical-align: middle;">email</span> info@spawellness.com</li>
-              <li><span class="material-icons me-1" style="font-size: 14px; vertical-align: middle;">location_on</span> Lima, Peru</li>
-            </ul>
+
+            <!-- Location -->
+            <div class="col-lg-3 col-md-6">
+              <h6 class="footer-title">Ubícanos</h6>
+              <ul class="footer-list">
+                <li>
+                  <i class="material-icons">location_on</i>
+                  <span>Av. Principal 123, Miraflores<br>Lima, Perú</span>
+                </li>
+                <li>
+                  <i class="material-icons">phone</i>
+                  <span>Celular: 999 888 777</span>
+                </li>
+                <li>
+                  <i class="material-icons">email</i>
+                  <span>contacto&#64;spawellness.com</span>
+                </li>
+                <li>
+                  <a href="https://maps.google.com" target="_blank" class="map-link">
+                    <i class="material-icons">place</i>
+                    <span>Ir al mapa</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="col-lg-3 col-md-6">
+              <h6 class="footer-title">Te Interesa</h6>
+              <ul class="footer-links">
+                <li><a routerLink="/cliente/servicios">Nuestros Servicios</a></li>
+                <li><a routerLink="/cliente/productos">Productos</a></li>
+                <li><a routerLink="/cliente/contacto">Contáctanos</a></li>
+                <li><a routerLink="/auth/signup">Crear Cuenta</a></li>
+              </ul>
+            </div>
+
+            <!-- Schedule & Contact -->
+            <div class="col-lg-3 col-md-6">
+              <h6 class="footer-title">Atención</h6>
+              <div class="schedule-item">
+                <div class="schedule-icon">
+                  <i class="material-icons">schedule</i>
+                </div>
+                <div class="schedule-info">
+                  <strong>De Lunes a Sábados</strong>
+                  <span>9:00a.m. A 9:00p.m.</span>
+                </div>
+              </div>
+              <div class="schedule-item">
+                <div class="schedule-icon">
+                  <i class="material-icons">schedule</i>
+                </div>
+                <div class="schedule-info">
+                  <strong>Domingos</strong>
+                  <span>9:00a.m. A 8:00p.m.</span>
+                </div>
+              </div>
+              <a href="https://wa.me/51999888777?text=Hola,%20necesito%20ayuda%20con%20una%20consulta" 
+                 target="_blank" 
+                 class="btn-contact">
+                <i class="material-icons">support_agent</i>
+                Contacta una Asesora
+              </a>
+            </div>
           </div>
         </div>
-        <hr>
-        <div class="row align-items-center">
-          <div class="col-md-6 text-center text-md-start">
-            <p class="mb-0 text-muted small">&copy; 2026 SPA Wellness. Todos los derechos reservados.</p>
-          </div>
-          <div class="col-md-6 text-center text-md-end">
-            <a href="#" class="text-muted me-3"><i class="fab fa-facebook-f"></i></a>
-            <a href="#" class="text-muted me-3"><i class="fab fa-instagram"></i></a>
-            <a href="#" class="text-muted"><i class="fab fa-whatsapp"></i></a>
+      </div>
+
+      <!-- Copyright -->
+      <div class="footer-bottom">
+        <div class="container-fluid px-4">
+          <div class="row align-items-center">
+            <div class="col-md-6 text-center text-md-start">
+              <p class="mb-0">Copyright &copy; 2026 SPA Wellness | Spa y Bienestar en Lima</p>
+            </div>
+            <div class="col-md-6 text-center text-md-end">
+              <p class="mb-0">Powered by SPA Wellness | Centro de Bienestar</p>
+            </div>
           </div>
         </div>
       </div>

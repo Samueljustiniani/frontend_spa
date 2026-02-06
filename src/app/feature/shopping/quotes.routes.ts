@@ -8,5 +8,9 @@ export const QUOTES_ROUTES: Routes = [
   {
     path: 'new',
     loadComponent: () => import('./quote-form.component').then(m => m.QuoteFormComponent)
+  },
+  {
+    path: ':id/edit',
+    loadComponent: () => import('./quote-form.component').then(m => m.QuoteFormComponent)
   }
 ];

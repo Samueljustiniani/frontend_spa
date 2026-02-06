@@ -2,9 +2,9 @@
   <div class="col-12">
     <div class="card">
       <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="mb-0"><i class="feather icon-home me-2"></i>Salas</h5>
+        <h5 class="mb-0"><i class="material-icons me-2" style="vertical-align: middle;">meeting_room</i>Salas</h5>
         <a routerLink="new" class="btn btn-primary btn-sm">
-          <i class="feather icon-plus me-1"></i>Nueva Sala
+          <i class="material-icons me-1" style="font-size: 18px; vertical-align: middle;">add</i>Nueva Sala
         </a>
       </div>
       <div class="card-body">
@@ -23,8 +23,8 @@
             <div class="card h-100" [class.border-success]="room.status === 'A'" [class.border-secondary]="room.status !== 'A'">
               <div class="card-body text-center">
                 <div class="mb-3">
-                  <i class="feather icon-home" style="font-size: 48px;" 
-                     [class.text-success]="room.status === 'A'" [class.text-secondary]="room.status !== 'A'"></i>
+                  <i class="material-icons" style="font-size: 48px;" 
+                     [class.text-success]="room.status === 'A'" [class.text-secondary]="room.status !== 'A'">meeting_room</i>
                 </div>
                 <h5 class="card-title">{{ room.name }}</h5>
                 <p class="card-text text-muted">{{ room.type }}</p>
@@ -34,10 +34,10 @@
               </div>
               <div class="card-footer bg-transparent text-center">
                 <a [routerLink]="[room.id, 'edit']" class="btn btn-outline-primary btn-sm me-1">
-                  <i class="feather icon-edit"></i> Editar
+                  <i class="material-icons" style="font-size: 18px; vertical-align: middle;">edit</i> Editar
                 </a>
                 <button (click)="deleteRoom(room.id)" class="btn btn-outline-danger btn-sm">
-                  <i class="feather icon-trash-2"></i>
+                  <i class="material-icons" style="font-size: 18px; vertical-align: middle;">delete</i>
                 </button>
               </div>
             </div>

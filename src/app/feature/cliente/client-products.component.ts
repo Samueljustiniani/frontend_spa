@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -39,7 +39,7 @@ import { catchError, finalize, timeout, of } from 'rxjs';
       <div class="container">
         <!-- Loading -->
         <div *ngIf="loading" class="text-center py-5">
-          <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;"></div>
+          <div class="spinner-border" role="status" style="width: 3rem; height: 3rem; color: #6B9080;"></div>
           <p class="mt-3 text-muted">Cargando productos...</p>
         </div>
 
@@ -86,7 +86,7 @@ import { catchError, finalize, timeout, of } from 'rxjs';
   `,
   styles: [`
     .page-header {
-      background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+      background: linear-gradient(135deg, rgba(107, 144, 128, 0.15) 0%, rgba(164, 195, 178, 0.15) 100%);
     }
     .product-card {
       border-radius: 12px;
@@ -115,7 +115,7 @@ import { catchError, finalize, timeout, of } from 'rxjs';
       color: #ddd;
     }
     .price {
-      color: #667eea;
+      color: #6B9080;
       font-weight: 700;
       font-size: 1.1rem;
     }
@@ -127,7 +127,10 @@ export class ClientProductsComponent implements OnInit {
   errorMsg = '';
   searchTerm = '';
 
-  constructor(private productService: ProductService) {}
+  constructor(
+    private productService: ProductService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
     this.loadProducts();
@@ -143,11 +146,17 @@ export class ClientProductsComponent implements OnInit {
         this.errorMsg = err.name === 'TimeoutError' 
           ? 'La carga está tardando demasiado. Intenta más tarde.'
           : 'Ocurrió un error al cargar los productos.';
+        this.cdr.detectChanges();
         return of([]);
       }),
-      finalize(() => this.loading = false)
+      finalize(() => {
+        this.loading = false;
+        this.cdr.detectChanges();
+      })
     ).subscribe((data) => {
+      console.log('[ClientProducts] Productos recibidos:', data.length);
       this.products = data;
+      this.cdr.detectChanges();
     });
   }
 

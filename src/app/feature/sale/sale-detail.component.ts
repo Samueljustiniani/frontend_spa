@@ -13,9 +13,9 @@ import { SaleResponse } from '../../core/interfaces/sale.interface';
       <div class="col-lg-8 mx-auto">
         <div class="card">
           <div class="card-header d-flex justify-content-between">
-            <h5 class="mb-0"><i class="feather icon-file-text me-2"></i>Detalle de Venta #{{ sale?.id }}</h5>
-            <a routerLink="/sales" class="btn btn-outline-secondary btn-sm">
-              <i class="feather icon-arrow-left me-1"></i>Volver
+            <h5 class="mb-0"><i class="material-icons me-2" style="vertical-align: middle;">receipt</i>Detalle de Venta #{{ sale?.id }}</h5>
+            <a routerLink="/admin/sales" class="btn btn-outline-secondary btn-sm">
+              <i class="material-icons me-1" style="font-size: 18px; vertical-align: middle;">arrow_back</i>Volver
             </a>
           </div>
           <div class="card-body" *ngIf="sale">

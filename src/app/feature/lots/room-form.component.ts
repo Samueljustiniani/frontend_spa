@@ -14,7 +14,7 @@ import { RoomService } from '../../core/services/room.service';
         <div class="card">
           <div class="card-header">
             <h5 class="mb-0">
-              <i class="feather icon-home me-2"></i>
+              <i class="material-icons me-2" style="vertical-align: middle;">meeting_room</i>
               {{ isEdit ? 'Editar Sala' : 'Nueva Sala' }}
             </h5>
           </div>

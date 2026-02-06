@@ -2,14 +2,14 @@
   <div class="col-12">
     <div class="card">
       <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="mb-0"><i class="feather icon-users me-2"></i>Usuarios</h5>
+        <h5 class="mb-0"><i class="material-icons me-2" style="vertical-align: middle;">people</i>Usuarios</h5>
         <div class="d-flex gap-2">
           <button class="btn btn-outline-secondary btn-sm" (click)="toggleShowInactive()">
-            <i class="feather" [class]="showInactive ? 'icon-eye-off' : 'icon-eye'"></i>
+            <i class="material-icons" style="font-size: 18px; vertical-align: middle;">{{ showInactive ? 'visibility_off' : 'visibility' }}</i>
             {{ showInactive ? 'Solo Activos' : 'Ver Todos' }}
           </button>
           <a routerLink="new" class="btn btn-primary btn-sm">
-            <i class="feather icon-plus me-1"></i>Nuevo Usuario
+            <i class="material-icons me-1" style="font-size: 18px; vertical-align: middle;">add</i>Nuevo Usuario
           </a>
         </div>
       </div>
@@ -66,16 +66,16 @@
                 </td>
                 <td>{{ user.createdAt | date:'dd/MM/yyyy' }}</td>
                 <td class="text-center">
-                  <a [routerLink]="[user.id, 'edit']" class="btn btn-icon btn-outline-primary btn-sm me-1" title="Editar">
-                    <i class="feather icon-edit"></i>
+                  <a [routerLink]="[user.id, 'edit']" class="btn btn-outline-primary btn-sm me-1" title="Editar">
+                    <i class="material-icons" style="font-size: 18px; vertical-align: middle;">edit</i>
                   </a>
                   <button *ngIf="user.status === 'A'" (click)="deleteUser(user.id!)" 
-                          class="btn btn-icon btn-outline-danger btn-sm" title="Desactivar">
-                    <i class="feather icon-user-x"></i>
+                          class="btn btn-outline-danger btn-sm" title="Desactivar">
+                    <i class="material-icons" style="font-size: 18px; vertical-align: middle;">person_off</i>
                   </button>
                   <button *ngIf="user.status !== 'A'" (click)="reactivateUser(user.id!)" 
-                          class="btn btn-icon btn-outline-success btn-sm" title="Reactivar">
-                    <i class="feather icon-user-check"></i>
+                          class="btn btn-outline-success btn-sm" title="Reactivar">
+                    <i class="material-icons" style="font-size: 18px; vertical-align: middle;">person_add</i>
                   </button>
                 </td>
               </tr>

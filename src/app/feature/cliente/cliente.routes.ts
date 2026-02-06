@@ -19,6 +19,11 @@ export const CLIENTE_ROUTES: Routes = [
     loadComponent: () => import('./contact.component').then(m => m.ContactComponent)
   },
   {
+    path: 'reservar',
+    canActivate: [AuthGuard],
+    loadComponent: () => import('./booking.component').then(m => m.BookingComponent)
+  },
+  {
     path: 'mis-citas',
     canActivate: [AuthGuard],
     loadComponent: () => import('./my-appointments.component').then(m => m.MyAppointmentsComponent)

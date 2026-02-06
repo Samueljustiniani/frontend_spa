@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { QuoteService } from '../../core/services/quote.service';
@@ -20,7 +20,7 @@ import { catchError, finalize, timeout, of } from 'rxjs';
             <p class="text-muted lead mb-0">Gestiona tus reservas y citas programadas</p>
           </div>
           <div class="col-md-4 text-md-end mt-3 mt-md-0">
-            <a routerLink="/cliente/servicios" class="btn btn-gradient">
+            <a routerLink="/cliente/reservar" class="btn btn-gradient">
               <i class="material-icons me-1" style="font-size: 18px; vertical-align: middle;">add</i>
               Nueva Cita
             </a>
@@ -34,7 +34,7 @@ import { catchError, finalize, timeout, of } from 'rxjs';
       <div class="container">
         <!-- Loading -->
         <div *ngIf="loading" class="text-center py-5">
-          <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;"></div>
+          <div class="spinner-border" role="status" style="width: 3rem; height: 3rem; color: #6B9080;"></div>
           <p class="mt-3 text-muted">Cargando tus citas...</p>
         </div>
 
@@ -76,10 +76,17 @@ import { catchError, finalize, timeout, of } from 'rxjs';
                     </div>
                   </div>
                   <div class="card-footer bg-white border-top">
-                    <button class="btn btn-outline-danger btn-sm" (click)="cancelAppointment(quote.id)" 
-                            *ngIf="quote.status === 'P' || quote.status === 'PENDIENTE'">
-                      Cancelar Cita
-                    </button>
+                    <div class="d-flex gap-2">
+                      <a [routerLink]="['/cliente/reservar']" [queryParams]="{editId: quote.id}" 
+                         class="btn btn-outline-primary btn-sm"
+                         *ngIf="quote.status === 'P' || quote.status === 'PENDIENTE'">
+                        <i class="material-icons" style="font-size: 16px; vertical-align: middle;">edit</i> Modificar
+                      </a>
+                      <button class="btn btn-outline-danger btn-sm" (click)="cancelAppointment(quote.id)" 
+                              *ngIf="quote.status === 'P' || quote.status === 'PENDIENTE'">
+                        <i class="material-icons" style="font-size: 16px; vertical-align: middle;">close</i> Cancelar
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -121,7 +128,7 @@ import { catchError, finalize, timeout, of } from 'rxjs';
             <i class="material-icons text-muted" style="font-size: 80px;">event_busy</i>
             <h4 class="mt-4">No tienes citas registradas</h4>
             <p class="text-muted mb-4">¡Reserva tu primera cita y disfruta de nuestros servicios!</p>
-            <a routerLink="/cliente/servicios" class="btn btn-gradient btn-lg">
+            <a routerLink="/cliente/reservar" class="btn btn-gradient btn-lg">
               Ver Servicios
             </a>
           </div>
@@ -131,14 +138,14 @@ import { catchError, finalize, timeout, of } from 'rxjs';
   `,
   styles: [`
     .page-header {
-      background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+      background: linear-gradient(135deg, rgba(107, 144, 128, 0.15) 0%, rgba(164, 195, 178, 0.15) 100%);
     }
     .appointment-card {
       border-radius: 12px;
       overflow: hidden;
     }
     .btn-gradient {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #6B9080 0%, #A4C3B2 100%);
       border: none;
       color: white;
       border-radius: 25px;
@@ -146,7 +153,7 @@ import { catchError, finalize, timeout, of } from 'rxjs';
     }
     .btn-gradient:hover {
       color: white;
-      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+      box-shadow: 0 5px 15px rgba(107, 144, 128, 0.4);
     }
   `]
 })
@@ -157,7 +164,8 @@ export class MyAppointmentsComponent implements OnInit {
 
   constructor(
     private quoteService: QuoteService,
-    private authService: AuthService
+    private authService: AuthService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -181,11 +189,17 @@ export class MyAppointmentsComponent implements OnInit {
         this.errorMsg = err.name === 'TimeoutError' 
           ? 'La carga está tardando demasiado. Intenta más tarde.'
           : 'Ocurrió un error al cargar tus citas.';
+        this.cdr.detectChanges();
         return of([]);
       }),
-      finalize(() => this.loading = false)
+      finalize(() => {
+        this.loading = false;
+        this.cdr.detectChanges();
+      })
     ).subscribe((data) => {
+      console.log('[MyAppointments] Citas recibidas:', data.length);
       this.appointments = data;
+      this.cdr.detectChanges();
     });
   }
 
