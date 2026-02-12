@@ -72,7 +72,7 @@ export class LoginComponent {
 
   loginWithGoogle(): void {
     // Redirigir al endpoint de Google OAuth2 del backend
-    window.location.href = 'http://localhost:8085/oauth2/authorization/google';
+    window.location.href = 'https://backend-spas.onrender.com/oauth2/authorization/google';
   }
 
   isInvalid(field: string): boolean {

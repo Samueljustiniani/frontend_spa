@@ -1,4 +1,7 @@
 <div class="admin-layout" [class.sidebar-collapsed]="!sidebarOpen">
+  <!-- Overlay for mobile -->
+  <div class="sidebar-overlay" [class.active]="sidebarOpen" (click)="toggleSidebar()"></div>
+  
   <!-- Sidebar -->
   <aside class="sidebar" [class.active]="sidebarOpen">
     <div class="sidebar-header">
@@ -16,7 +19,8 @@
             <a class="nav-link" 
                [routerLink]="item.route" 
                routerLinkActive="active"
-               [routerLinkActiveOptions]="{exact: item.route === '/dashboard'}">
+               [routerLinkActiveOptions]="{exact: item.route === '/dashboard'}"
+               (click)="closeSidebarOnMobile()">
               <span class="material-icons">{{ item.icon }}</span>
               <span>{{ item.label }}</span>
             </a>

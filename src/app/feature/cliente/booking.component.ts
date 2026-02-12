@@ -616,9 +616,10 @@ export class BookingComponent implements OnInit {
 
     this.submitting = true;
 
+    const serviceIdsList = this.selectedServices.map(s => s.id);
     const quoteData = {
       userId: userId,
-      serviceIds: this.selectedServices.map(s => s.id),
+      serviceIds: serviceIdsList,
       roomId: this.form.value.roomId,
       quoteDate: this.form.value.quoteDate,
       startTime: this.form.value.startTime,

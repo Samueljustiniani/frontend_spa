@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { timeout } from 'rxjs/operators';
 import { Product } from '../interfaces';
 import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class ProductService {
   private readonly API_URL = `${environment.apiUrl}/products`;
+  private readonly TIMEOUT = 30000; // 30 segundos
 
   constructor(private http: HttpClient) {}
 
@@ -15,7 +17,7 @@ export class ProductService {
     if (status) {
       params = params.set('status', status);
     }
-    return this.http.get<Product[]>(this.API_URL, { params });
+    return this.http.get<Product[]>(this.API_URL, { params }).pipe(timeout(this.TIMEOUT));
   }
 
   listActivos(): Observable<Product[]> {
@@ -27,18 +29,18 @@ export class ProductService {
   }
 
   getById(id: number): Observable<Product> {
-    return this.http.get<Product>(`${this.API_URL}/${id}`);
+    return this.http.get<Product>(`${this.API_URL}/${id}`).pipe(timeout(this.TIMEOUT));
   }
 
   create(product: Product): Observable<Product> {
-    return this.http.post<Product>(this.API_URL, product);
+    return this.http.post<Product>(this.API_URL, product).pipe(timeout(this.TIMEOUT));
   }
 
   update(id: number, product: Product): Observable<Product> {
-    return this.http.put<Product>(`${this.API_URL}/${id}`, product);
+    return this.http.put<Product>(`${this.API_URL}/${id}`, product).pipe(timeout(this.TIMEOUT));
   }
 
   delete(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.API_URL}/${id}`);
+    return this.http.delete<void>(`${this.API_URL}/${id}`).pipe(timeout(this.TIMEOUT));
   }
 }

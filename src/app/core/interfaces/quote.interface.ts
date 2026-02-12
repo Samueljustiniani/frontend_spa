@@ -14,7 +14,7 @@ export interface Quote {
 
 export interface QuoteRequest {
   userId: number;
-  serviceIds: number[];
+  serviceIds: number[];   // Array de IDs de servicios
   roomId: number;
   quoteDate: string;
   startTime: string;

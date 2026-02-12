@@ -54,6 +54,12 @@ export class AdminLayoutComponent implements OnInit {
     this.sidebarOpen = !this.sidebarOpen;
   }
 
+  closeSidebarOnMobile(): void {
+    if (window.innerWidth < 992) {
+      this.sidebarOpen = false;
+    }
+  }
+
   toggleUserDropdown(): void {
     this.userDropdownOpen = !this.userDropdownOpen;
   }

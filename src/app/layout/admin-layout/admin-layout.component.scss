@@ -316,7 +316,34 @@ $spa-light: #CCE3DE;
   padding: 25px;
 }
 
+// Overlay for mobile
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  
+  &.active {
+    opacity: 1;
+  }
+}
+
 @media (max-width: 991px) {
+  .sidebar-overlay {
+    display: block;
+    pointer-events: none;
+    
+    &.active {
+      pointer-events: auto;
+    }
+  }
+  
   .sidebar {
     transform: translateX(-100%);
     

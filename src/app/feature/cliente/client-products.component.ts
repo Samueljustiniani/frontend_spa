@@ -4,7 +4,7 @@ import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ProductService } from '../../core/services/product.service';
 import { Product } from '../../core/interfaces/product.interface';
-import { catchError, finalize, timeout, of } from 'rxjs';
+import { catchError, finalize, of } from 'rxjs';
 
 @Component({
   selector: 'app-client-products',
@@ -40,8 +40,7 @@ import { catchError, finalize, timeout, of } from 'rxjs';
         <!-- Loading -->
         <div *ngIf="loading" class="text-center py-5">
           <div class="spinner-border" role="status" style="width: 3rem; height: 3rem; color: #6B9080;"></div>
-          <p class="mt-3 text-muted">Cargando productos...</p>
-        </div>
+          <p class="mt-3 text-muted">Cargando productos...</p>          <small class=\"text-muted d-block mt-2\">El servidor puede tardar unos segundos en responder</small>        </div>
 
         <!-- Error Message -->
         <div *ngIf="!loading && errorMsg" class="alert alert-danger text-center" role="alert">
@@ -141,11 +140,10 @@ export class ClientProductsComponent implements OnInit {
     this.errorMsg = '';
     
     this.productService.listActivos().pipe(
-      timeout(10000),
       catchError((err) => {
         this.errorMsg = err.name === 'TimeoutError' 
-          ? 'La carga está tardando demasiado. Intenta más tarde.'
-          : 'Ocurrió un error al cargar los productos.';
+          ? 'La carga está tardando demasiado. El servidor puede estar iniciando, intenta de nuevo en unos segundos.'
+          : 'Ocurrió un error al cargar los productos. Verifica tu conexión.';
         this.cdr.detectChanges();
         return of([]);
       }),

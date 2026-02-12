@@ -117,8 +117,12 @@ export class QuoteFormComponent implements OnInit {
     this.submitting = true;
     
     const quoteData = {
-      ...this.form.value,
-      serviceIds: this.form.value.serviceIds || []
+      userId: this.form.value.userId,
+      serviceIds: this.form.value.serviceIds || [],
+      roomId: this.form.value.roomId,
+      quoteDate: this.form.value.quoteDate,
+      startTime: this.form.value.startTime,
+      endTime: this.form.value.endTime
     };
     
     const operation = this.isEdit && this.quoteId
