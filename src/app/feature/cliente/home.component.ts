@@ -146,33 +146,7 @@ import { Product } from '../../core/interfaces/product.interface';
       </div>
     </section>
 
-    <!-- Testimonios Section -->
-    <section class="py-5 testimonials-section">
-      <div class="container">
-        <div class="text-center mb-5">
-          <span class="section-badge">Opiniones</span>
-          <h2 class="section-title mt-2">Nuestros Clientes Dicen</h2>
-        </div>
-        
-        <div class="row g-4">
-          <div class="col-md-4" *ngFor="let testimonial of testimonials">
-            <div class="testimonial-card">
-              <div class="testimonial-rating">
-                <i class="material-icons" *ngFor="let star of [1,2,3,4,5]">star</i>
-              </div>
-              <p class="testimonial-text">"{{ testimonial.text }}"</p>
-              <div class="testimonial-author">
-                <div class="author-avatar">{{ testimonial.initials }}</div>
-                <div class="author-info">
-                  <strong>{{ testimonial.name }}</strong>
-                  <span>{{ testimonial.source }}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+
 
     <!-- Reservas Section -->
     <section class="py-5 reservas-section">
@@ -199,26 +173,17 @@ import { Product } from '../../core/interfaces/product.interface';
           <div class="col-lg-6">
             <div class="reserva-card">
               <h4 class="mb-4 text-center">Reserva Ahora</h4>
-              <p class="text-center text-muted mb-4">Contáctanos por WhatsApp para agendar tu cita</p>
-              <a href="https://wa.me/51999999999?text=Hola,%20quiero%20reservar%20una%20cita" 
-                 target="_blank" class="btn btn-whatsapp btn-lg w-100">
-                <i class="material-icons me-2">chat</i> Contactar por WhatsApp
+              <p class="text-center text-muted mb-4">Reserva tu cita en línea y asegura tu momento de relajación</p>
+              <a routerLink="/cliente/reservar" class="btn btn-success btn-lg w-100">
+                <i class="material-icons me-2">calendar_month</i> Reservar Cita
               </a>
-              <div class="text-center mt-3">
-                <small class="text-muted">Respuesta inmediata</small>
-              </div>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- WhatsApp Floating Button - Dudas -->
-    <a href="https://wa.me/51999999999?text=Hola,%20tengo%20una%20consulta" 
-       target="_blank" class="whatsapp-float" title="¿Tienes dudas? Escríbenos">
-      <i class="material-icons">help_outline</i>
-      <span class="whatsapp-tooltip">¿Dudas?</span>
-    </a>
+    <!-- Botón flotante de WhatsApp eliminado -->
   `,
   styles: [`
     :host {
@@ -618,19 +583,118 @@ import { Product } from '../../core/interfaces/product.interface';
       50% { box-shadow: 0 5px 35px rgba(37, 211, 102, 0.8); }
     }
 
-    /* Responsive */
-    @media (max-width: 768px) {
+    /* Responsive - Tablet */
+    @media (max-width: 991px) {
+      .hero-section {
+        padding: 60px 0;
+      }
       .hero-title {
-        font-size: 2.2rem;
+        font-size: 2.8rem;
+      }
+      .hero-subtitle {
+        font-size: 1.1rem;
+      }
+      .min-vh-80 {
+        min-height: 60vh;
+      }
+      .section-title {
+        font-size: 2rem;
+      }
+      .service-card, .product-card {
+        margin-bottom: 20px;
+      }
+    }
+
+    /* Responsive - Mobile */
+    @media (max-width: 768px) {
+      .hero-section {
+        padding: 50px 0;
+      }
+      .hero-title {
+        font-size: 2rem;
+        text-align: center;
       }
       .hero-subtitle {
         font-size: 1rem;
+        text-align: center;
+      }
+      .min-vh-80 {
+        min-height: auto;
+        padding: 40px 0;
       }
       .section-title {
-        font-size: 1.8rem;
+        font-size: 1.6rem;
+      }
+      .section-subtitle {
+        font-size: 0.95rem;
       }
       .features-section {
         margin-top: 0;
+      }
+      .feature-card {
+        padding: 25px 15px;
+        margin-bottom: 15px;
+      }
+      .reserva-card {
+        padding: 25px 20px;
+      }
+      .contact-item {
+        justify-content: center;
+        text-align: center;
+      }
+      .btn-lg {
+        padding: 12px 24px;
+        font-size: 14px;
+      }
+      .d-flex.gap-3 {
+        flex-direction: column;
+        align-items: center;
+        gap: 12px !important;
+      }
+      .hero-price-box {
+        padding: 15px 20px;
+        text-align: center;
+      }
+      .price-value {
+        font-size: 2rem;
+      }
+    }
+
+    /* Responsive - Mobile pequeño */
+    @media (max-width: 480px) {
+      .hero-section {
+        padding: 40px 0;
+      }
+      .hero-title {
+        font-size: 1.6rem;
+      }
+      .hero-subtitle {
+        font-size: 0.9rem;
+      }
+      .section-title {
+        font-size: 1.4rem;
+      }
+      .promo-badge {
+        font-size: 0.75rem;
+        padding: 6px 14px;
+      }
+      .service-icon {
+        width: 55px;
+        height: 55px;
+      }
+      .service-icon .material-icons {
+        font-size: 26px;
+      }
+      .service-price {
+        font-size: 1.2rem;
+      }
+      .feature-icon {
+        width: 60px;
+        height: 60px;
+      }
+      .btn-lg {
+        width: 100%;
+        padding: 12px 20px;
       }
     }
   `]

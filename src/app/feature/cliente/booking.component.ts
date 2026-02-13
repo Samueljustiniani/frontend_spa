@@ -380,6 +380,66 @@ import { ServiceEntity } from '../../core/interfaces/service.interface';
       opacity: 0.6;
       cursor: not-allowed;
     }
+
+    /* Responsive - Tablet */
+    @media (max-width: 991px) {
+      .booking-header {
+        padding: 50px 0;
+      }
+      .booking-header h1 {
+        font-size: 2rem;
+      }
+    }
+
+    /* Responsive - Mobile */
+    @media (max-width: 768px) {
+      .booking-header {
+        padding: 40px 0;
+      }
+      .booking-header h1 {
+        font-size: 1.6rem;
+      }
+      .booking-header p {
+        font-size: 0.95rem;
+      }
+      .booking-form .card-body {
+        padding: 20px 15px;
+      }
+      .room-card, .service-card {
+        padding: 12px;
+      }
+      .room-info h6 {
+        font-size: 14px;
+      }
+      .btn-gradient {
+        padding: 12px 24px;
+        font-size: 14px;
+      }
+    }
+
+    /* Responsive - Mobile pequeño */
+    @media (max-width: 480px) {
+      .booking-header {
+        padding: 30px 0;
+      }
+      .booking-header h1 {
+        font-size: 1.4rem;
+      }
+      .booking-form .card-body {
+        padding: 15px 12px;
+      }
+      .form-label {
+        font-size: 13px;
+      }
+      .form-control, .form-select {
+        padding: 10px 12px;
+        font-size: 14px;
+      }
+      .btn-gradient {
+        width: 100%;
+        padding: 12px 20px;
+      }
+    }
   `]
 })
 export class BookingComponent implements OnInit {

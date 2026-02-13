@@ -76,16 +76,22 @@ import { catchError, finalize, timeout, of } from 'rxjs';
                     </div>
                   </div>
                   <div class="card-footer bg-white border-top">
-                    <div class="d-flex gap-2">
-                      <a [routerLink]="['/cliente/reservar']" [queryParams]="{editId: quote.id}" 
+                    <div class="d-flex gap-2 flex-wrap">
+                      <a [routerLink]="['/cliente/reservar']" [queryParams]="{editId: quote.id}"
                          class="btn btn-outline-primary btn-sm"
                          *ngIf="quote.status === 'P' || quote.status === 'PENDIENTE'">
                         <i class="material-icons" style="font-size: 16px; vertical-align: middle;">edit</i> Modificar
                       </a>
-                      <button class="btn btn-outline-danger btn-sm" (click)="cancelAppointment(quote.id)" 
+                      <button class="btn btn-outline-success btn-sm" (click)="openWhatsApp('Hola, quiero confirmar mi cita en el spa. Mi código de cita es: #' + quote.id)"
                               *ngIf="quote.status === 'P' || quote.status === 'PENDIENTE'">
+                        <i class="material-icons" style="font-size: 16px; vertical-align: middle;">check_circle</i> Confirmar por WhatsApp
+                      </button>
+                      <button class="btn btn-outline-danger btn-sm" (click)="cancelAppointment(quote)"
+                              *ngIf="quote.status === 'P' || quote.status === 'PENDIENTE' || quote.status === 'CONFIRMADA'">
                         <i class="material-icons" style="font-size: 16px; vertical-align: middle;">close</i> Cancelar
                       </button>
+                      <!-- Botón Reactivar solo visible para admin, no para cliente -->
+                      <!-- Botón WhatsApp general eliminado, solo queda 'Confirmar por WhatsApp' -->
                     </div>
                   </div>
                 </div>
@@ -143,6 +149,11 @@ import { catchError, finalize, timeout, of } from 'rxjs';
     .appointment-card {
       border-radius: 12px;
       overflow: hidden;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .appointment-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
     }
     .btn-gradient {
       background: linear-gradient(135deg, #6B9080 0%, #A4C3B2 100%);
@@ -154,6 +165,54 @@ import { catchError, finalize, timeout, of } from 'rxjs';
     .btn-gradient:hover {
       color: white;
       box-shadow: 0 5px 15px rgba(107, 144, 128, 0.4);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .page-header {
+        padding: 2rem 0 !important;
+      }
+      .page-header h1 {
+        font-size: 1.6rem;
+      }
+      .page-header p {
+        font-size: 0.9rem;
+      }
+      .appointment-card .card-body {
+        padding: 15px;
+      }
+      .appointment-card .card-footer {
+        padding: 12px;
+      }
+      .d-flex.gap-2 {
+        gap: 8px !important;
+      }
+      .btn-sm {
+        padding: 6px 10px;
+        font-size: 12px;
+      }
+      h4 {
+        font-size: 1.2rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .page-header h1 {
+        font-size: 1.4rem;
+      }
+      .btn-gradient {
+        padding: 8px 20px;
+        font-size: 14px;
+      }
+      .card-header {
+        padding: 12px;
+      }
+      .appointment-card .card-body {
+        padding: 12px;
+      }
+      .d-flex.gap-2.flex-wrap {
+        justify-content: center;
+      }
     }
   `]
 })
@@ -207,7 +266,7 @@ export class MyAppointmentsComponent implements OnInit {
     const today = new Date().toISOString().split('T')[0];
     return this.appointments.filter(q => 
       q.quoteDate >= today && 
-      (q.status === 'P' || q.status === 'PENDIENTE' || q.status === 'CONFIRMADA')
+      (q.status === 'P' || q.status === 'PENDIENTE' || q.status === 'CONFIRMADA' || q.status === 'INACTIVA')
     );
   }
 
@@ -231,12 +290,25 @@ export class MyAppointmentsComponent implements OnInit {
     }
   }
 
-  cancelAppointment(id: number): void {
-    if (confirm('¿Estás seguro de cancelar esta cita?')) {
-      this.quoteService.cancel(id).subscribe({
+
+
+  cancelAppointment(quote: QuoteResponse): void {
+    const msg = '¿Estás seguro de que quieres cancelar esta cita? Si necesitas ayuda, escríbenos por WhatsApp.';
+    if (window.confirm(msg)) {
+      this.quoteService.cancel(quote.id).subscribe({
         next: () => this.loadAppointments(),
-        error: (err) => console.error('Error cancelling appointment:', err)
+        error: (err) => alert('Error al cancelar la cita.')
       });
+    } else {
+      this.openWhatsApp('Hola, necesito cancelar mi cita en el spa.');
     }
+  }
+
+
+
+  openWhatsApp(message: string): void {
+    const phone = '51912470219';
+    const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+    window.open(url, '_blank');
   }
 }

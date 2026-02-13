@@ -50,8 +50,16 @@ export class QuoteService {
     return this.http.patch<QuoteResponse>(`${this.API_URL}/${id}/status`, null, { params }).pipe(timeout(this.TIMEOUT));
   }
 
+  reactivate(id: number): Observable<QuoteResponse> {
+    return this.http.patch<QuoteResponse>(`${this.API_URL}/${id}/reactivate`, null).pipe(timeout(this.TIMEOUT));
+  }
+
+  confirm(id: number): Observable<QuoteResponse> {
+    return this.updateStatus(id, 'CONFIRMADA');
+  }
+
   cancel(id: number): Observable<QuoteResponse> {
-    return this.updateStatus(id, 'C');
+    return this.updateStatus(id, 'CANCELADA');
   }
 
   delete(id: number): Observable<void> {
