@@ -60,7 +60,13 @@
         <button class="btn btn-icon" (click)="toggleSidebar()">
           <span class="material-icons">menu</span>
         </button>
-        <span class="header-title d-none d-md-inline">Centro de Bienestar</span>
+        <div class="datetime-display">
+          <span class="material-icons" style="font-size: 20px; color: #6B9080;">schedule</span>
+          <div class="datetime-info">
+            <span class="current-time">{{ currentTime }}</span>
+            <span class="current-date">{{ currentDate }}</span>
+          </div>
+        </div>
       </div>
 
       <div class="header-right">

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
@@ -11,11 +11,16 @@ import { User } from '../../core/interfaces';
   templateUrl: './user-layout.component.html',
   styleUrls: ['./user-layout.component.scss']
 })
-export class UserLayoutComponent implements OnInit {
+export class UserLayoutComponent implements OnInit, OnDestroy {
   currentUser: User | null = null;
   menuOpen = false;
   userDropdownOpen = false;
-  sidebarOpen = true;
+  sidebarOpen = false;
+
+  // Reloj
+  currentTime = '';
+  currentDate = '';
+  private clockInterval: any;
 
   menuItems = [
     { label: 'Inicio', icon: 'home', route: '/' },
@@ -31,6 +36,10 @@ export class UserLayoutComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    // Iniciar reloj
+    this.updateClock();
+    this.clockInterval = setInterval(() => this.updateClock(), 1000);
+
     this.authService.currentUser$.subscribe(user => {
       this.currentUser = user;
     });
@@ -98,5 +107,28 @@ export class UserLayoutComponent implements OnInit {
   isAdmin(): boolean {
     const role = this.authService.getUserRole();
     return role === 'ADMIN' || role === 'ROLE_ADMIN';
+  }
+
+  ngOnDestroy(): void {
+    if (this.clockInterval) {
+      clearInterval(this.clockInterval);
+    }
+  }
+
+  private updateClock(): void {
+    const now = new Date();
+    const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 
+                   'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+    const dias = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+    
+    let hours = now.getHours();
+    const minutes = now.getMinutes().toString().padStart(2, '0');
+    const seconds = now.getSeconds().toString().padStart(2, '0');
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+    hours = hours ? hours : 12;
+    
+    this.currentTime = `${hours}:${minutes}:${seconds} ${ampm}`;
+    this.currentDate = `${dias[now.getDay()]}, ${now.getDate()} de ${meses[now.getMonth()]} ${now.getFullYear()}`;
   }
 }

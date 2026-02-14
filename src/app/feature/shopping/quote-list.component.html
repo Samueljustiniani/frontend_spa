@@ -51,7 +51,7 @@
               <tr *ngFor="let quote of quotes">
                 <td>#{{ quote.id }}</td>
                 <td><strong>{{ quote.quoteDate }}</strong></td>
-                <td>{{ quote.startTime }} - {{ quote.endTime }}</td>
+                <td>{{ quote.startTime | timeFormat }} - {{ quote.endTime | timeFormat }}</td>
                 <td>{{ quote.userName }}</td>
                 <td>
                   <span class="badge bg-info">{{ quote.serviceNames.join(', ') || 'Servicio' }}</span>

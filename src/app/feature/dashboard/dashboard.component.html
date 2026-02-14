@@ -96,7 +96,7 @@
             <li class="list-group-item">
               <div class="d-flex justify-content-between align-items-center">
                 <div>
-                  <strong>{{ quote.startTime }} - {{ quote.endTime }}</strong>
+                  <strong>{{ quote.startTime | timeFormat }} - {{ quote.endTime | timeFormat }}</strong>
                   <p class="mb-0 small text-muted">{{ quote.serviceName }}</p>
                 </div>
                 <span class="badge" [class]="quote.status === 'A' ? 'bg-success' : quote.status === 'P' ? 'bg-warning' : 'bg-secondary'">

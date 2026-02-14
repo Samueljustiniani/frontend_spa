@@ -4,12 +4,13 @@ import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { QuoteService } from '../../core/services/quote.service';
 import { QuoteResponse } from '../../core/interfaces/quote.interface';
+import { TimeFormatPipe } from '../../pipes/time-format.pipe';
 import { catchError, finalize, of } from 'rxjs';
 
 @Component({
   selector: 'app-quote-list',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, RouterModule, FormsModule, TimeFormatPipe],
   templateUrl: './quote-list.component.html',
   styleUrls: ['./quote-list.component.scss']
 })

@@ -5,11 +5,12 @@ import { ProductService } from '../../core/services/product.service';
 import { SaleService } from '../../core/services/sale.service';
 import { QuoteService } from '../../core/services/quote.service';
 import { UserService } from '../../core/services/user.service';
+import { TimeFormatPipe } from '../../pipes/time-format.pipe';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, TimeFormatPipe],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })

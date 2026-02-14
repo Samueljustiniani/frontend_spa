@@ -38,9 +38,12 @@
         <button class="btn btn-icon" (click)="toggleSidebar()">
           <span class="material-icons">menu</span>
         </button>
-        <div class="search-box">
-          <span class="material-icons">search</span>
-          <input type="text" placeholder="Buscar...">
+        <div class="datetime-display">
+          <span class="material-icons" style="font-size: 20px; color: #6B9080;">schedule</span>
+          <div class="datetime-info">
+            <span class="current-time">{{ currentTime }}</span>
+            <span class="current-date">{{ currentDate }}</span>
+          </div>
         </div>
       </div>
 

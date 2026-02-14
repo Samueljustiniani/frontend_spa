@@ -4,12 +4,13 @@ import { RouterModule } from '@angular/router';
 import { QuoteService } from '../../core/services/quote.service';
 import { AuthService } from '../../core/services/auth.service';
 import { QuoteResponse } from '../../core/interfaces/quote.interface';
+import { TimeFormatPipe } from '../../pipes/time-format.pipe';
 import { catchError, finalize, timeout, of } from 'rxjs';
 
 @Component({
   selector: 'app-my-appointments',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, TimeFormatPipe],
   template: `
     <!-- Page Header -->
     <section class="page-header py-5 bg-light">
@@ -64,7 +65,7 @@ import { catchError, finalize, timeout, of } from 'rxjs';
                   <div class="card-body">
                     <div class="mb-3">
                       <i class="material-icons me-2 text-muted" style="font-size: 18px; vertical-align: middle;">schedule</i>
-                      <strong>{{ quote.startTime }} - {{ quote.endTime }}</strong>
+                      <strong>{{ quote.startTime | timeFormat }} - {{ quote.endTime | timeFormat }}</strong>
                     </div>
                     <div class="mb-3">
                       <i class="material-icons me-2 text-muted" style="font-size: 18px; vertical-align: middle;">spa</i>
@@ -117,7 +118,7 @@ import { catchError, finalize, timeout, of } from 'rxjs';
                   <div class="card-body">
                     <div class="mb-2">
                       <i class="material-icons me-2 text-muted" style="font-size: 18px; vertical-align: middle;">schedule</i>
-                      {{ quote.startTime }} - {{ quote.endTime }}
+                      {{ quote.startTime | timeFormat }} - {{ quote.endTime | timeFormat }}
                     </div>
                     <div class="mb-2">
                       <i class="material-icons me-2 text-muted" style="font-size: 18px; vertical-align: middle;">spa</i>
