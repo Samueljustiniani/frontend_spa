@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ProductService } from '../../core/services/product.service';
+import { ImageService } from '../../core/services/image.service';
 import { Product } from '../../core/interfaces/product.interface';
 
 @Component({
@@ -18,10 +19,15 @@ export class ProductFormComponent implements OnInit {
   productId?: number;
   loading = false;
   submitting = false;
+  uploading = false;
+  imagePreview: string | null = null;
+  selectedFile: File | null = null;
+  showImageModal = false;
 
   constructor(
     private fb: FormBuilder,
     private productService: ProductService,
+    private imageService: ImageService,
     private route: ActivatedRoute,
     private router: Router
   ) {}
@@ -53,14 +59,45 @@ export class ProductFormComponent implements OnInit {
     this.productService.getById(this.productId!).subscribe({
       next: (product) => {
         this.form.patchValue(product);
+        if (product.imageUrl) {
+          this.imagePreview = product.imageUrl;
+        }
         this.loading = false;
       },
       error: (err) => {
         console.error('Error loading product:', err);
         this.loading = false;
-        this.router.navigate(['/products']);
+        this.router.navigate(['/admin/products']);
       }
     });
+  }
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      this.selectedFile = input.files[0];
+      
+      // Crear preview
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.imagePreview = e.target?.result as string;
+      };
+      reader.readAsDataURL(this.selectedFile);
+    }
+  }
+
+  removeImage(): void {
+    this.selectedFile = null;
+    this.imagePreview = null;
+    this.form.patchValue({ imageUrl: '' });
+  }
+
+  viewImage(): void {
+    this.showImageModal = true;
+  }
+
+  closeImageModal(): void {
+    this.showImageModal = false;
   }
 
   onSubmit(): void {
@@ -70,6 +107,29 @@ export class ProductFormComponent implements OnInit {
     }
 
     this.submitting = true;
+
+    // Si hay una imagen seleccionada, primero la subimos
+    if (this.selectedFile) {
+      this.uploading = true;
+      this.imageService.upload(this.selectedFile).subscribe({
+        next: (response) => {
+          this.form.patchValue({ imageUrl: response.secure_url });
+          this.uploading = false;
+          this.saveProduct();
+        },
+        error: (err) => {
+          console.error('Error uploading image:', err);
+          this.uploading = false;
+          this.submitting = false;
+          alert('Error al subir la imagen. Por favor, intente de nuevo.');
+        }
+      });
+    } else {
+      this.saveProduct();
+    }
+  }
+
+  private saveProduct(): void {
     const product: Product = this.form.value;
 
     const request$ = this.isEdit
@@ -78,7 +138,7 @@ export class ProductFormComponent implements OnInit {
 
     request$.subscribe({
       next: () => {
-        this.router.navigate(['/products']);
+        this.router.navigate(['/admin/products']);
       },
       error: (err) => {
         console.error('Error saving product:', err);

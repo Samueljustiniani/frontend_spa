@@ -58,7 +58,7 @@ export class CustomerFormComponent implements OnInit {
       },
       error: () => {
         this.loading = false;
-        this.router.navigate(['/customers']);
+        this.router.navigate(['/admin/customers']);
       }
     });
   }
@@ -82,7 +82,7 @@ export class CustomerFormComponent implements OnInit {
       : this.userService.create(data);
 
     request$.subscribe({
-      next: () => this.router.navigate(['/customers']),
+      next: () => this.router.navigate(['/admin/customers']),
       error: (err) => {
         console.error('Error saving user:', err);
         this.submitting = false;

@@ -78,12 +78,12 @@ export class OAuthCallbackComponent implements OnInit {
       next: (user) => {
         this.message = `¡Bienvenido, ${user.name || user.email}!`;
         // Redirigir al dashboard después de un momento
-        setTimeout(() => this.router.navigate(['/dashboard']), 500);
+        setTimeout(() => this.router.navigate(['/admin/dashboard']), 500);
       },
       error: (err) => {
         console.error('Error al obtener usuario:', err);
         // Aún así redirigir al dashboard, el usuario se cargará después
-        this.router.navigate(['/dashboard']);
+        this.router.navigate(['/admin/dashboard']);
       }
     });
   }

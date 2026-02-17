@@ -56,7 +56,7 @@
                 <th>ID</th>
                 <th>Imagen</th>
                 <th>Nombre</th>
-                <th>Descripción</th>
+                <th class="d-none d-md-table-cell">Descripción</th>
                 <th>Precio</th>
                 <th>Stock</th>
                 <th>Estado</th>
@@ -65,26 +65,29 @@
             </thead>
             <tbody>
               <tr *ngFor="let product of filteredProducts">
-                <td>{{ product.id }}</td>
-                <td>
+                <td data-label="ID">{{ product.id }}</td>
+                <td data-label="Imagen">
                   <img *ngIf="product.imageUrl" [src]="product.imageUrl" 
                        alt="{{ product.name }}" class="img-thumbnail" style="width: 50px; height: 50px; object-fit: cover;">
                   <span *ngIf="!product.imageUrl" class="badge bg-secondary">Sin imagen</span>
                 </td>
-                <td><strong>{{ product.name }}</strong></td>
-                <td>{{ product.description | slice:0:50 }}{{ product.description.length > 50 ? '...' : '' }}</td>
-                <td class="text-success fw-bold">S/. {{ product.price | number:'1.2-2' }}</td>
-                <td>
+                <td data-label="Nombre"><strong>{{ product.name }}</strong></td>
+                <td data-label="Descripción" class="d-none d-md-table-cell">{{ product.description | slice:0:50 }}{{ product.description.length > 50 ? '...' : '' }}</td>
+                <td data-label="Precio" class="text-success fw-bold">S/. {{ product.price | number:'1.2-2' }}</td>
+                <td data-label="Stock">
                   <span [class]="product.stock > 10 ? 'badge bg-success' : product.stock > 0 ? 'badge bg-warning' : 'badge bg-danger'">
                     {{ product.stock }}
                   </span>
                 </td>
-                <td>
+                <td data-label="Estado">
                   <span [class]="product.status === 'A' ? 'badge bg-success' : 'badge bg-secondary'">
                     {{ product.status === 'A' ? 'Activo' : 'Inactivo' }}
                   </span>
                 </td>
-                <td class="text-center">
+                <td class="text-center" data-label="">
+                  <button *ngIf="product.imageUrl" (click)="viewImage(product)" class="btn btn-outline-info btn-sm me-1" title="Ver imagen">
+                    <i class="material-icons" style="font-size: 18px; vertical-align: middle;">visibility</i>
+                  </button>
                   <a [routerLink]="[product.id, 'edit']" class="btn btn-outline-primary btn-sm me-1" title="Editar">
                     <i class="material-icons" style="font-size: 18px; vertical-align: middle;">edit</i>
                   </a>
@@ -105,3 +108,20 @@
     </div>
   </div>
 </div>
+
+<!-- Modal para ver imagen -->
+<div class="modal fade" [class.show]="showImageModal" [style.display]="showImageModal ? 'block' : 'none'"
+     tabindex="-1" (click)="closeImageModal()">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h5 class="modal-title">{{ selectedImageName }}</h5>
+        <button type="button" class="btn-close" (click)="closeImageModal()"></button>
+      </div>
+      <div class="modal-body text-center p-0">
+        <img [src]="selectedImageUrl" [alt]="selectedImageName" class="img-fluid">
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-backdrop fade" [class.show]="showImageModal" *ngIf="showImageModal"></div>

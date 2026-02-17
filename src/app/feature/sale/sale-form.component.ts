@@ -101,7 +101,7 @@ export class SaleFormComponent implements OnInit {
 
     this.submitting = true;
     this.saleService.create(this.form.value).subscribe({
-      next: () => this.router.navigate(['/sales']),
+      next: () => this.router.navigate(['/admin/sales']),
       error: (err) => {
         console.error('Error creating sale:', err);
         this.submitting = false;

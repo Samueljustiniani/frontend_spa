@@ -5,6 +5,7 @@ export interface ServiceEntity {
   durationMinutes: number;
   price: number;
   gender: string;  // "M" = Masculino, "F" = Femenino, "U" = Unisex
+  imageUrl?: string;
   status: string;  // "A" = Activo, "I" = Inactivo
 }
 
@@ -15,5 +16,6 @@ export interface ServiceDTO {
   durationMinutes: number;
   price: number;
   gender: string;
+  imageUrl?: string;
   status: string;
 }

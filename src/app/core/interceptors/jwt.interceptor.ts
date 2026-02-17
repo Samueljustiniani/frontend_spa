@@ -31,10 +31,14 @@ export class JwtInterceptor implements HttpInterceptor {
       });
     }
 
+    // No aplicar timeout corto a las peticiones de subida de imágenes
+    const isImageUpload = req.url.includes('/images/upload');
+    const timeoutMs = isImageUpload ? 120000 : 15000; // 2 min para imágenes, 15s para el resto
+
     console.log(`[HTTP] ${req.method} ${req.url}`, token ? '(con token)' : '(sin token)');
 
     return next.handle(authReq).pipe(
-      timeout(15000), // Timeout global de 15 segundos
+      timeout(timeoutMs),
       catchError((error: HttpErrorResponse | Error) => {
         if (error instanceof HttpErrorResponse) {
           console.error(`[HTTP Error] ${req.url}:`, error.status, error.message);
@@ -44,7 +48,7 @@ export class JwtInterceptor implements HttpInterceptor {
             this.router.navigate(['/auth/signin']);
           }
         } else if (error.name === 'TimeoutError') {
-          console.error(`[HTTP Timeout] ${req.url}: La petición tardó más de 15 segundos`);
+          console.error(`[HTTP Timeout] ${req.url}: La petición tardó más de ${timeoutMs/1000} segundos`);
         } else {
           console.error(`[HTTP Error] ${req.url}:`, error);
         }

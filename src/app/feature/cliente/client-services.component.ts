@@ -61,13 +61,17 @@ import { catchError, finalize, timeout, of } from 'rxjs';
         <div class="row g-4" *ngIf="!loading && !errorMsg">
           <div class="col-md-6 col-lg-4" *ngFor="let service of filteredServices">
             <div class="card service-card h-100 border-0 shadow-sm">
-              <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start mb-3">
-                  <div class="service-icon">
-                    <i class="material-icons">spa</i>
-                  </div>
-                  <span class="badge bg-light text-dark">{{ getGenderLabel(service.gender) }}</span>
+              <!-- Imagen del servicio -->
+              <div class="card-img-top service-image position-relative">
+                <img *ngIf="service.imageUrl" [src]="service.imageUrl" [alt]="service.name"
+                     class="w-100" style="height: 180px; object-fit: cover; border-radius: 16px 16px 0 0;">
+                <div *ngIf="!service.imageUrl" class="w-100 d-flex align-items-center justify-content-center bg-light"
+                     style="height: 180px; border-radius: 16px 16px 0 0;">
+                  <i class="material-icons text-muted" style="font-size: 64px;">spa</i>
                 </div>
+                <span class="badge bg-light text-dark position-absolute top-0 end-0 m-2">{{ getGenderLabel(service.gender) }}</span>
+              </div>
+              <div class="card-body">
                 <h5 class="card-title">{{ service.name }}</h5>
                 <p class="card-text text-muted">{{ service.description || 'Servicio de relajación y bienestar profesional.' }}</p>
                 <hr>

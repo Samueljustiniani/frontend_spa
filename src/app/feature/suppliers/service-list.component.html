@@ -45,6 +45,19 @@
         <div class="row" *ngIf="!loading && !errorMsg">
           <div class="col-md-6 col-lg-4 mb-4" *ngFor="let service of filteredServices">
             <div class="card h-100" [class.border-primary]="service.status === 'A'" [class.border-secondary]="service.status !== 'A'">
+              <!-- Imagen del servicio -->
+              <div class="card-img-top position-relative" style="height: 180px; overflow: hidden;">
+                <img *ngIf="service.imageUrl" [src]="service.imageUrl" [alt]="service.name"
+                     class="w-100 h-100" style="object-fit: cover;">
+                <div *ngIf="!service.imageUrl" class="w-100 h-100 d-flex align-items-center justify-content-center bg-light">
+                  <i class="material-icons text-muted" style="font-size: 64px;">spa</i>
+                </div>
+                <span class="badge position-absolute top-0 end-0 m-2"
+                      [class.bg-success]="service.status === 'A'"
+                      [class.bg-secondary]="service.status !== 'A'">
+                  {{ service.status === 'A' ? 'Activo' : 'Inactivo' }}
+                </span>
+              </div>
               <div class="card-header text-white" [class.bg-primary]="service.status === 'A'" [class.bg-secondary]="service.status !== 'A'">
                 <div class="d-flex justify-content-between align-items-center">
                   <h5 class="mb-0">{{ service.name }}</h5>
@@ -66,6 +79,9 @@
                 </div>
               </div>
               <div class="card-footer bg-transparent">
+                <button *ngIf="service.imageUrl" (click)="viewImage(service)" class="btn btn-outline-info btn-sm me-1" title="Ver imagen">
+                  <i class="material-icons" style="font-size: 18px; vertical-align: middle;">visibility</i> Ver
+                </button>
                 <a [routerLink]="[service.id, 'edit']" class="btn btn-outline-primary btn-sm me-1">
                   <i class="material-icons" style="font-size: 18px; vertical-align: middle;">edit</i> Editar
                 </a>
@@ -83,3 +99,20 @@
     </div>
   </div>
 </div>
+
+<!-- Modal para ver imagen -->
+<div class="modal fade" [class.show]="showImageModal" [style.display]="showImageModal ? 'block' : 'none'"
+     tabindex="-1" (click)="closeImageModal()">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h5 class="modal-title">{{ selectedImageName }}</h5>
+        <button type="button" class="btn-close" (click)="closeImageModal()"></button>
+      </div>
+      <div class="modal-body text-center p-0">
+        <img [src]="selectedImageUrl" [alt]="selectedImageName" class="img-fluid">
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-backdrop fade" [class.show]="showImageModal" *ngIf="showImageModal"></div>

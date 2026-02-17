@@ -45,7 +45,7 @@ import { RoomService } from '../../core/services/room.service';
                 <button type="submit" class="btn btn-primary" [disabled]="submitting">
                   {{ isEdit ? 'Actualizar' : 'Crear' }}
                 </button>
-                <a routerLink="/rooms" class="btn btn-outline-secondary">Cancelar</a>
+                <a routerLink="/admin/rooms" class="btn btn-outline-secondary">Cancelar</a>
               </div>
             </form>
           </div>
@@ -91,7 +91,7 @@ export class RoomFormComponent implements OnInit {
       : this.roomService.create(this.form.value);
 
     request$.subscribe({
-      next: () => this.router.navigate(['/rooms']),
+      next: () => this.router.navigate(['/admin/rooms']),
       error: () => this.submitting = false
     });
   }

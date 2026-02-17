@@ -19,6 +19,9 @@ export class ServiceListComponent implements OnInit {
   errorMsg = '';
   searchTerm = '';
   statusFilter = ''; // '', 'A', 'I'
+  showImageModal = false;
+  selectedImageUrl = '';
+  selectedImageName = '';
 
   constructor(
     private spaService: SpaServiceService,
@@ -97,5 +100,19 @@ export class ServiceListComponent implements OnInit {
         error: (err) => console.error('Error deleting service:', err)
       });
     }
+  }
+
+  viewImage(service: ServiceEntity): void {
+    if (service.imageUrl) {
+      this.selectedImageUrl = service.imageUrl;
+      this.selectedImageName = service.name;
+      this.showImageModal = true;
+    }
+  }
+
+  closeImageModal(): void {
+    this.showImageModal = false;
+    this.selectedImageUrl = '';
+    this.selectedImageName = '';
   }
 }

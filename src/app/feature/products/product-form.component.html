@@ -1,82 +1,184 @@
-<div class="row">
-  <div class="col-md-8 col-lg-6 mx-auto">
-    <div class="card">
-      <div class="card-header">
-        <h5 class="mb-0">
-          <i class="material-icons me-2" style="vertical-align: middle;">inventory_2</i>
-          {{ isEdit ? 'Editar Producto' : 'Nuevo Producto' }}
-        </h5>
-      </div>
-      <div class="card-body">
-        <!-- Loading -->
-        <div *ngIf="loading" class="text-center py-4">
-          <div class="spinner-border text-primary" role="status">
-            <span class="visually-hidden">Cargando...</span>
+<div class="product-form-container">
+  <div class="row justify-content-center">
+    <div class="col-lg-8 col-xl-7">
+      <!-- Header -->
+      <div class="form-header mb-4">
+        <div class="d-flex align-items-center">
+          <a routerLink="/admin/products" class="btn btn-icon me-3">
+            <i class="material-icons">arrow_back</i>
+          </a>
+          <div>
+            <h2 class="mb-1">{{ isEdit ? 'Editar Producto' : 'Nuevo Producto' }}</h2>
+            <p class="text-muted mb-0">{{ isEdit ? 'Modifica los datos del producto' : 'Completa los datos para crear un nuevo producto' }}</p>
           </div>
         </div>
+      </div>
 
-        <!-- Form -->
-        <form *ngIf="!loading" [formGroup]="form" (ngSubmit)="onSubmit()">
-          <div class="mb-3">
-            <label class="form-label">Nombre *</label>
-            <input type="text" class="form-control" formControlName="name"
-                   [class.is-invalid]="isInvalid('name')">
-            <div class="invalid-feedback" *ngIf="isInvalid('name')">
-              El nombre es requerido
-            </div>
-          </div>
+      <!-- Loading -->
+      <div *ngIf="loading" class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Cargando...</span>
+        </div>
+      </div>
 
-          <div class="mb-3">
-            <label class="form-label">Descripción</label>
-            <textarea class="form-control" formControlName="description" rows="3"></textarea>
-          </div>
-
-          <div class="row">
-            <div class="col-md-6 mb-3">
-              <label class="form-label">Precio *</label>
-              <div class="input-group">
-                <span class="input-group-text">S/.</span>
-                <input type="number" class="form-control" formControlName="price" step="0.01"
-                       [class.is-invalid]="isInvalid('price')">
+      <!-- Card Principal -->
+      <div class="card border-0 shadow-sm" *ngIf="!loading">
+        <div class="card-body p-4">
+          <form [formGroup]="form" (ngSubmit)="onSubmit()">
+            
+            <!-- Sección: Información Básica -->
+            <div class="form-section mb-4">
+              <h6 class="section-title">
+                <i class="material-icons me-2">info</i>
+                Información Básica
+              </h6>
+              
+              <div class="mb-3">
+                <label class="form-label fw-medium">Nombre del Producto *</label>
+                <input type="text" class="form-control form-control-lg" formControlName="name"
+                       placeholder="Ej: Crema Hidratante Premium" [class.is-invalid]="isInvalid('name')">
+                <div class="invalid-feedback" *ngIf="isInvalid('name')">
+                  El nombre es requerido
+                </div>
               </div>
-              <div class="invalid-feedback" *ngIf="isInvalid('price')">
-                Ingrese un precio válido
-              </div>
-            </div>
-
-            <div class="col-md-6 mb-3">
-              <label class="form-label">Stock *</label>
-              <input type="number" class="form-control" formControlName="stock"
-                     [class.is-invalid]="isInvalid('stock')">
-              <div class="invalid-feedback" *ngIf="isInvalid('stock')">
-                Ingrese un stock válido
+              
+              <div class="mb-3">
+                <label class="form-label fw-medium">Descripción</label>
+                <textarea class="form-control" formControlName="description" rows="3"
+                          placeholder="Describe brevemente el producto..."></textarea>
               </div>
             </div>
-          </div>
 
-          <div class="mb-3">
-            <label class="form-label">URL de Imagen</label>
-            <input type="url" class="form-control" formControlName="imageUrl" 
-                   placeholder="https://ejemplo.com/imagen.jpg">
-          </div>
+            <!-- Sección: Detalles del Producto -->
+            <div class="form-section mb-4">
+              <h6 class="section-title">
+                <i class="material-icons me-2">tune</i>
+                Detalles del Producto
+              </h6>
+              
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label fw-medium">Precio *</label>
+                  <div class="input-group">
+                    <span class="input-group-text">S/.</span>
+                    <input type="number" class="form-control" formControlName="price" step="0.01" min="0"
+                           [class.is-invalid]="isInvalid('price')">
+                  </div>
+                  <div class="invalid-feedback" *ngIf="isInvalid('price')">
+                    Ingrese un precio válido
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label fw-medium">Stock *</label>
+                  <div class="input-group">
+                    <input type="number" class="form-control" formControlName="stock" min="0"
+                           [class.is-invalid]="isInvalid('stock')">
+                    <span class="input-group-text">unidades</span>
+                  </div>
+                  <div class="invalid-feedback" *ngIf="isInvalid('stock')">
+                    Ingrese un stock válido
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Estado solo en modo edición -->
+              <div class="row g-3 mt-2" *ngIf="isEdit">
+                <div class="col-md-6">
+                  <label class="form-label fw-medium">Estado</label>
+                  <select class="form-select" formControlName="status">
+                    <option value="A">Activo</option>
+                    <option value="I">Inactivo</option>
+                  </select>
+                </div>
+              </div>
+            </div>
 
-          <div class="mb-4">
-            <label class="form-label">Estado</label>
-            <select class="form-select" formControlName="status">
-              <option value="A">Activo</option>
-              <option value="I">Inactivo</option>
-            </select>
-          </div>
+            <!-- Sección: Imagen -->
+            <div class="form-section mb-4">
+              <h6 class="section-title">
+                <i class="material-icons me-2">image</i>
+                Imagen del Producto
+              </h6>
+              
+              <div class="image-upload-area">
+                <!-- Preview de imagen -->
+                <div *ngIf="imagePreview" class="image-preview-container mb-3">
+                  <div class="image-preview">
+                    <img [src]="imagePreview" alt="Preview">
+                    <div class="image-overlay">
+                      <button type="button" class="btn btn-light btn-sm me-2" (click)="viewImage()">
+                        <i class="material-icons">visibility</i>
+                      </button>
+                      <button type="button" class="btn btn-danger btn-sm" (click)="removeImage()">
+                        <i class="material-icons">delete</i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Dropzone -->
+                <div class="dropzone" *ngIf="!imagePreview" (click)="fileInput.click()">
+                  <input type="file" #fileInput class="d-none" accept="image/*"
+                         (change)="onFileSelected($event)">
+                  <i class="material-icons upload-icon">cloud_upload</i>
+                  <p class="mb-1">Haz clic para seleccionar una imagen</p>
+                  <small class="text-muted">JPG, PNG o GIF (máx. 5MB)</small>
+                </div>
+                
+                <!-- Cambiar imagen si ya hay una -->
+                <div *ngIf="imagePreview" class="text-center">
+                  <button type="button" class="btn btn-outline-primary btn-sm" (click)="fileInput.click()">
+                    <i class="material-icons me-1">refresh</i>
+                    Cambiar imagen
+                  </button>
+                  <input type="file" #fileInput class="d-none" accept="image/*"
+                         (change)="onFileSelected($event)">
+                </div>
+                
+                <!-- Progress bar -->
+                <div *ngIf="uploading" class="mt-3">
+                  <div class="progress">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                         style="width: 100%">Subiendo imagen...</div>
+                  </div>
+                </div>
+                
+                <input type="hidden" formControlName="imageUrl">
+              </div>
+            </div>
 
-          <div class="d-flex gap-2">
-            <button type="submit" class="btn btn-primary" [disabled]="submitting">
-              <span *ngIf="submitting" class="spinner-border spinner-border-sm me-1"></span>
-              {{ isEdit ? 'Actualizar' : 'Crear' }} Producto
-            </button>
-            <a routerLink="/products" class="btn btn-outline-secondary">Cancelar</a>
-          </div>
-        </form>
+            <!-- Botones de acción -->
+            <div class="form-actions d-flex gap-3 pt-3 border-top">
+              <button type="submit" class="btn btn-primary btn-lg flex-grow-1" 
+                      [disabled]="submitting || uploading || form.invalid">
+                <span *ngIf="submitting || uploading" class="spinner-border spinner-border-sm me-2"></span>
+                <i class="material-icons me-2" *ngIf="!submitting && !uploading">{{ isEdit ? 'save' : 'add' }}</i>
+                {{ isEdit ? 'Guardar Cambios' : 'Crear Producto' }}
+              </button>
+              <a routerLink="/admin/products" class="btn btn-outline-secondary btn-lg">
+                Cancelar
+              </a>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   </div>
 </div>
+
+<!-- Modal para ver imagen -->
+<div class="modal fade" [class.show]="showImageModal" [style.display]="showImageModal ? 'block' : 'none'"
+     tabindex="-1" (click)="closeImageModal()">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header border-0">
+        <h5 class="modal-title">Vista previa</h5>
+        <button type="button" class="btn-close" (click)="closeImageModal()"></button>
+      </div>
+      <div class="modal-body text-center p-0">
+        <img [src]="imagePreview" alt="Imagen del producto" class="img-fluid">
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-backdrop fade" [class.show]="showImageModal" *ngIf="showImageModal"></div>

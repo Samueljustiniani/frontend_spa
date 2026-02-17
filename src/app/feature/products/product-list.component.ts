@@ -19,6 +19,9 @@ export class ProductListComponent implements OnInit {
   errorMsg = '';
   searchTerm = '';
   statusFilter = ''; // '', 'A', 'I'
+  showImageModal = false;
+  selectedImageUrl = '';
+  selectedImageName = '';
 
   constructor(
     private productService: ProductService,
@@ -88,5 +91,19 @@ export class ProductListComponent implements OnInit {
       p.name.toLowerCase().includes(term) || 
       p.description?.toLowerCase().includes(term)
     );
+  }
+
+  viewImage(product: Product): void {
+    if (product.imageUrl) {
+      this.selectedImageUrl = product.imageUrl;
+      this.selectedImageName = product.name;
+      this.showImageModal = true;
+    }
+  }
+
+  closeImageModal(): void {
+    this.showImageModal = false;
+    this.selectedImageUrl = '';
+    this.selectedImageName = '';
   }
 }
